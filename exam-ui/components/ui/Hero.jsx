@@ -1,4 +1,4 @@
-import { Button } from "@/components/Button";
+import { Button } from "../Button";
 import { BookOpen, GraduationCap } from "lucide-react";
 import { motion }  from "framer-motion";
 import { Link } from "react-router-dom";

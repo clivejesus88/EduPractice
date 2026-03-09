@@ -1,4 +1,4 @@
-import { Button } from "@/components/Button";
+import { Button } from "../Button";
 import { GraduationCap, Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";

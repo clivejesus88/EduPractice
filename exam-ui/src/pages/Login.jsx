@@ -1,188 +1,175 @@
-import { useState } from "react";
-import { motion } from "framer-motion";
+"use client";
+
+import * as React from "react";
 import { useForm } from "react-hook-form";
-import { Eye, EyeOff, Mail, Lock } from "lucide-react";
-import { Button } from "@/components/Button";
-import { Input } from "@/components/input";
-import { Label } from "@/components/label";
-import { Navigate } from "react-router-dom";
-
-
-
-/* ===============================
-   Motion Variants
-================================ */
-const container = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.12 },
-  },
-};
-
-const item = {
-  hidden: { opacity: 0, y: 24 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] },
-  },
-};
-
-const floatingFormula = {
-  animate: {
-    y: [-10, 10, -10],
-    opacity: [0.15, 0.25, 0.15],
-    transition: {
-      duration: 10,
-      repeat: Infinity,
-      ease: "easeInOut",
-    },
-  },
-};
 
 export default function Login() {
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [errors, setErrors] = React.useState({});
+  const [isLogin, setIsLogin] = React.useState(true);
+
   const { register, handleSubmit } = useForm();
-  const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState(false);
 
-  const onSubmit = async (data) => {
-    setLoading(true);
-    setError("");
-
-    try {
-      const formData = new URLSearchParams();
-      formData.append('username', data.email);
-      formData.append('password', data.password);
-
-      const response = await fetch('http://localhost:8000/token', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: formData,
-      });
-
-      if (!response.ok) {
-        throw new Error('Invalid credentials');
+  const handleFormSubmit = async (data) => {
+    setErrors({});
+    // Manual validation
+    const newErrors = {};
+    if (!data.email || !/\S+@\S+\.\S+/.test(data.email)) {
+      newErrors.email = "Please enter a valid email.";
+    }
+    if (!data.password || data.password.length < 8) {
+      newErrors.password = "Password must be at least 8 characters.";
+    }
+    if (!isLogin) {
+      if (!data.username || data.username.trim() === "") {
+        newErrors.username = "Username is required.";
       }
+      if (!data.confirmPassword) {
+        newErrors.confirmPassword = "Please confirm your password.";
+      } else if (data.password !== data.confirmPassword) {
+        newErrors.confirmPassword = "Passwords do not match.";
+      }
+    }
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
 
-      const result = await response.json();
-      localStorage.setItem('token', result.access_token);
-      setSuccess(true);
-      console.log("Login successful");
-    } catch (err) {
-      console.error(err);
-      setError("Invalid email or password");
+    setIsLoading(true);
+    try {
+      // Placeholder for onSubmit
+      console.log(`${isLogin ? 'Login' : 'Sign up'} submitted:`, data);
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Redirect to dashboard
+      window.location.href = '/dashboard';
+    } catch (error) {
+      console.error("Submission failed:", error);
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-black flex items-center justify-center overflow-hidden px-4">
+    <div className="flex min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black">
+      {/* Left Panel: Form */}
+      <div className="flex w-full flex-col items-center justify-center p-8 md:w-1/2">
+        <div className="w-full max-w-md bg-gray-800/50 backdrop-blur-sm p-8 rounded-lg border border-gray-700 shadow-2xl">
+          <div className="mb-6 text-center">
+            <h2 className="text-3xl font-bold text-white">Exam Hub</h2>
+            <p className="text-gray-300 mt-2">
+              {isLogin ? "Welcome back! Please sign in to your account." : "Create your account to get started."}
+            </p>
+          </div>
 
-      {/* Floating Academic Formulas */}
-      <motion.div
-        variants={floatingFormula}
-        animate="animate"
-        className="absolute top-20 left-16 text-white text-2xl font-mono"
-      >
-        ∫ eˣ dx
-      </motion.div>
+          <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
+            {!isLogin && (
+              <div>
+                <label className="block text-sm font-medium text-gray-200 mb-2">Username</label>
+                <input
+                  type="text"
+                  {...register("username")}
+                  className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent transition duration-200"
+                  placeholder="johndoe123"
+                  disabled={isLoading}
+                />
+                {errors.username && <p className="text-red-400 text-sm mt-1">{errors.username}</p>}
+              </div>
+            )}
 
-      <motion.div
-        variants={floatingFormula}
-        animate="animate"
-        className="absolute bottom-24 right-20 text-white text-xl font-mono"
-      >
-        E = mc²
-      </motion.div>
-
-      <motion.div
-        variants={floatingFormula}
-        animate="animate"
-        className="absolute top-1/6 right-1/3 text-white text-lg font-mono "
-      >
-        a² + b² = c²
-      </motion.div>
-
-      {/* Glass Card */}
-      <motion.div
-        variants={container}
-        initial="hidden"
-        animate="visible"
-        className="relative z-10 w-full max-w-md rounded-2xl border border-white/20 bg-white/10 backdrop-blur-xl shadow-[0_20px_60px_rgba(0,0,0,0.4)] p-8"
-      >
-        {/* Header */}
-        <motion.div variants={item} className="text-center mb-8">
-          <h1 className="text-2xl font-bold text-white tracking-tight">
-            Exam Hub
-          </h1>
-          <p className="text-sm text-white/70 mt-1">
-            Precision learning. Serious results.
-          </p>
-        </motion.div>
-
-        {/* Form */}
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          <motion.div variants={item}>
-            <Label className="text-white/80">Email</Label>
-            <div className="relative mt-1">
-              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40 w-5 h-5" />
-              <Input
+            <div>
+              <label className="block text-sm font-medium text-gray-200 mb-2">Email Address</label>
+              <input
                 type="email"
-                required
-                placeholder="student@examhub.com"
-                className="pl-10 bg-white/10 border-white/20 text-white placeholder:text-white/40 focus:border-white/40"
                 {...register("email")}
+                className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent transition duration-200"
+                placeholder="email@example.com"
+                disabled={isLoading}
               />
+              {errors.email && <p className="text-red-400 text-sm mt-1">{errors.email}</p>}
             </div>
-          </motion.div>
 
-          <motion.div variants={item}>
-            <Label className="text-white/80">Password</Label>
-            <div className="relative mt-1">
-              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40 w-5 h-5" />
-              <Input
-                type={showPassword ? "text" : "password"}
-                required
-                placeholder="••••••••"
-                className="pl-10 pr-10 bg-white/10 border-white/20 text-white placeholder:text-white/40 focus:border-white/40"
+            <div>
+              <label className="block text-sm font-medium text-gray-200 mb-2">Password</label>
+              <input
+                type="password"
                 {...register("password")}
+                className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent transition duration-200"
+                placeholder="••••••••••••"
+                disabled={isLoading}
               />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/50"
-              >
-                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-              </button>
+              {errors.password && <p className="text-red-400 text-sm mt-1">{errors.password}</p>}
             </div>
-          </motion.div>
 
-          <motion.div variants={item} whileTap={{ scale: 0.97 }}>
-            <Button
+            {!isLogin && (
+              <div>
+                <label className="block text-sm font-medium text-gray-200 mb-2">Confirm Password</label>
+                <input
+                  type="password"
+                  {...register("confirmPassword")}
+                  className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent transition duration-200"
+                  placeholder="••••••••••••"
+                  disabled={isLoading}
+                />
+                {errors.confirmPassword && <p className="text-red-400 text-sm mt-1">{errors.confirmPassword}</p>}
+              </div>
+            )}
+
+            {isLogin && (
+              <div className="flex items-center justify-between">
+                <label className="flex items-center">
+                  <input
+                    type="checkbox"
+                    {...register("rememberMe")}
+                    className="h-4 w-4 text-gray-300 focus:ring-gray-500 border-gray-600 rounded bg-gray-700"
+                    disabled={isLoading}
+                  />
+                  <span className="ml-2 text-sm text-gray-300">Remember Me</span>
+                </label>
+                <a
+                  href="#"
+                  className="text-sm text-gray-300 hover:text-white transition duration-200"
+                >
+                  Forgot Password?
+                </a>
+              </div>
+            )}
+
+            <button
               type="submit"
-              disabled={loading}
-              className="w-full bg-white text-slate-900 hover:bg-white/90 h-11 font-semibold"
+              className="w-full bg-gray-700 text-white py-3 rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={isLoading}
             >
-              {loading ? "Authenticating…" : "Enter Exam Hub"}
-              {success && <Navigate to="/dashboard" />}
-            </Button>
-            {error && <p className="text-red-400 text-sm text-center mt-2">{error}</p>}
-          </motion.div>
-        </form>
+              {isLoading ? (isLogin ? "Signing In..." : "Signing Up...") : (isLogin ? "Sign In" : "Sign Up")}
+            </button>
+          </form>
 
-        <motion.p
-          variants={item}
-          className="text-center text-xs text-white/50 mt-6"
-        >
-          Built for focus, mastery, and exam success
-        </motion.p>
-      </motion.div>
+          <p className="mt-6 text-center text-sm text-gray-400">
+            {isLogin ? "Don't have an account?" : "Already have an account?"}{" "}
+            <a
+              href="#"
+              onClick={(e) => { e.preventDefault(); setIsLogin(!isLogin); }}
+              className="text-gray-300 hover:text-white font-medium transition duration-200"
+            >
+              {isLogin ? "Sign up here" : "Sign in here"}
+            </a>
+          </p>
+        </div>
+      </div>
+
+      {/* Right Panel: Image */}
+      <div className="hidden md:flex w-1/2 relative">
+        <img
+          src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1471&q=80"
+          alt="Students studying"
+          className="h-full w-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-gray-900/60 to-black/60"></div>
+        <div className="absolute bottom-10 left-10 text-white">
+          <h3 className="text-2xl font-bold mb-2">Empower Your Learning</h3>
+          <p className="text-lg text-gray-200">Join thousands of students achieving their goals.</p>
+        </div>
+      </div>
     </div>
   );
 }

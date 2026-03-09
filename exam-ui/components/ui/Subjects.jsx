@@ -1,6 +1,6 @@
 import { Atom, Calculator, ChevronRight } from "lucide-react";
 import { Card } from "@/components/Card";
-import { Button } from "@/components/Button";
+import { Button } from "../Button";
 import { Badge } from "@/components/Badge";
 import { motion } from "framer-motion";
 
