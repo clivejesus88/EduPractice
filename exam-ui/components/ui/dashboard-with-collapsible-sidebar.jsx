@@ -181,7 +181,7 @@ const TitleSection = ({ open }) => {
               <div className="flex items-center gap-2">
                 <div>
                   <span className="block text-sm font-semibold text-gray-900 dark:text-gray-100">
-                    Exam Hub
+                    EduPractice
                   </span>
                   <span className="block text-xs text-gray-500 dark:text-gray-400">
                     Student Portal

@@ -5,22 +5,22 @@ import { motion } from "framer-motion";
 
 const testimonials = [
   {
-    name: "Sarah Johnson",
+    name: "Mutebi Micheal",
     role: "High School Student",
     content: "This app transformed my physics grades! The instant feedback helped me understand concepts I struggled with for months.",
     rating: 5,
-    avatar: "SJ"
+    avatar: "MM"
   },
   {
-    name: "Michael Chen",
-    role: "College Student",
+    name: "Namazzi Ruatha",
+    role: "A-Level Candidate",
     content: "The adaptive learning is brilliant. It knows exactly what I need to work on. My calculus skills have improved dramatically.",
     rating: 5,
-    avatar: "MC"
+    avatar: "NR"
   },
   {
     name: "Emma Williams",
-    role: "Exam Candidate",
+    role: "A-Level Student",
     content: "Passed my entrance exam with flying colors! The exam-focused questions prepared me perfectly for the real thing.",
     rating: 5,
     avatar: "EW"

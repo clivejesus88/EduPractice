@@ -52,7 +52,7 @@ export function Footer() {
               <div className="w-10 h-10 rounded-lg bg-gray-800 flex items-center justify-center">
                 <GraduationCap className="w-6 h-6 text-white" />
               </div>
-              <span className="text-xl font-bold text-white">ExamHub</span>
+              <span className="text-xl font-bold text-white">EduPractice</span>
             </div>
             <p className="text-gray-400 mb-4 max-w-md justify-center text-center">
               Master Physics and Mathematics with thousands of practice questions and instant feedback.
@@ -60,7 +60,7 @@ export function Footer() {
             <div className="flex items-center gap-2 text-sm justify-center">
               <Mail className="w-4 h-4" />
               <a href="mailto:hello@edupractice.com" className="hover:text-white transition-colors">
-                info@examhub.com
+                info@edupractice.com
               </a>
             </div>
           </motion.div>
@@ -148,7 +148,7 @@ export function Footer() {
           transition={{ delay: 0.5, duration: 0.6 }}
         >
           <p className="text-sm text-gray-400">
-            © 2026 ExamHub. All rights reserved.
+            © 2026 EduPractice. All rights reserved.
           </p>
           
           <div className="flex items-center gap-4">

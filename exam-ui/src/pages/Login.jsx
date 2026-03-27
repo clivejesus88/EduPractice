@@ -56,7 +56,7 @@ export default function Login() {
       <div className="flex w-full flex-col items-center justify-center p-8 md:w-1/2">
         <div className="w-full max-w-md bg-gray-800/50 backdrop-blur-sm p-8 rounded-lg border border-gray-700 shadow-2xl">
           <div className="mb-6 text-center">
-            <h2 className="text-3xl font-bold text-white">Exam Hub</h2>
+            <h2 className="text-3xl font-bold text-white">EduPractice</h2>
             <p className="text-gray-300 mt-2">
               {isLogin ? "Welcome back! Please sign in to your account." : "Create your account to get started."}
             </p>
