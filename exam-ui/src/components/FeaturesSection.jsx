@@ -157,7 +157,7 @@ export function FeaturesSection() {
             className="text-4xl md:text-5xl font-bold text-slate-950 mb-4 relative inline-block">
             
             Everything You Need to Excel
-            {/* Accent line */}
+            
             <motion.svg
               className="absolute -bottom-4 left-0 w-full h-2"
               viewBox="0 0 100 10"
@@ -179,13 +179,7 @@ export function FeaturesSection() {
               style={{
                 transformOrigin: 'left'
               }}>
-              
-              <path
-                d="M0 5H100"
-                stroke="#fbbf24"
-                strokeWidth="4"
-                strokeLinecap="round" />
-              
+
             </motion.svg>
           </motion.h2>
           <motion.p

@@ -63,14 +63,7 @@ export function Footer() {
               
               <div className="bg-white rounded-lg p-1.5 overflow-hidden">
                 <motion.div
-                  animate={{
-                    rotate: 360
-                  }}
-                  transition={{
-                    duration: 20,
-                    repeat: Infinity,
-                    ease: 'linear'
-                  }}>
+                  >
                   
                   <GraduationCapIcon className="w-6 h-6 text-slate-950" />
                 </motion.div>
