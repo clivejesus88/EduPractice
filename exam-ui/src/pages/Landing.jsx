@@ -1,28 +1,24 @@
-import { Header } from "@/components/ui/Header";
-import { Hero } from "@/components/ui/Hero";
-import { Features } from "@/components/ui/Features";
-import { Subjects } from "@/components/ui/Subjects";
-import { HowItWorks } from "@/components/ui/HowItWorks";
-import { Testimonials } from "@/components/ui/Testimonials";
-import { CTA } from "@/components/ui/CTA";
-import { Footer } from "@/components/ui/Footer";
+import React from 'react';
+import { Navbar } from '@/src/components/Navbar';
+import { HeroSection } from '@/src/components/HeroSection';
+import { FeaturesSection } from '@/src/components/FeaturesSection';
+import { SubjectsSection } from '@/src/components/SubjectsSection';
+import { HowItWorksSection } from '@/src/components/HowItWorksSection';
+import { TestimonialsSection } from '@/src/components/TestimonialsSection';
+import { CTASection } from '@/src/components/CTASection';
+import { Footer } from '@/src/components/Footer';
+export default function Landing() {
+  return (
+    <div className="w-full min-h-screen bg-white">
+      <Navbar />
+      <HeroSection />
+      <FeaturesSection />
+      <SubjectsSection />
+      <HowItWorksSection />
+      <TestimonialsSection />
+      <CTASection />
+      <Footer />
+    </div>
+    );
 
-export function Landing() {
-    return(
-        <div className="min-h-screen bg-white">
-            <Header />
-            <main>
-            <Hero/>
-            <Features />
-            <Subjects />
-            <HowItWorks />
-            <Testimonials />
-            <CTA />
-            </main>
-            <Footer />
-        </div>
-
-    )
 }
-
-export default Landing;
