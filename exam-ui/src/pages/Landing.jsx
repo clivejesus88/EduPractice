@@ -157,7 +157,7 @@ export default function Landing() {
             <div className="relative rounded-2xl overflow-hidden border-2 border-gray-700/50 shadow-2xl">
               <div className="absolute inset-0 bg-gradient-to-br from-amber-500/10 to-teal-500/10 z-10" />
               <img
-                src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=600&h=400&fit=crop"
+                src="https://images.unsplash.com/photo-1556302132-40bb13638500?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MzF8fG1hdGhzfGVufDB8fDB8fHww"
                 alt="Education materials"
                 className="w-full h-auto object-cover"
               />
