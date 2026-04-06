@@ -319,9 +319,9 @@ export function Dashboard() {
           </div>
         </div>
 
-        {/* Welcome Banner */}
+        {/* Profile Banner */}
         <motion.div
-          className="w-full bg-gradient-to-r from-amber-500/20 via-[#111827] to-teal-500/10 border border-gray-800 rounded-2xl p-6 sm:p-8 mb-8 relative overflow-hidden"
+          className="w-full bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 border border-slate-700 rounded-2xl p-6 sm:p-8 mb-8 relative overflow-hidden"
           initial={{
             opacity: 0,
             y: 20,
@@ -331,241 +331,369 @@ export function Dashboard() {
             y: 0,
           }}
         >
-          <div className="absolute right-0 top-0 bottom-0 w-1/3 bg-gradient-to-l from-amber-500/10 to-transparent pointer-events-none" />
-          {/* Abstract decorative shapes */}
-          <div className="absolute right-10 top-1/2 -translate-y-1/2 w-32 h-32 border-4 border-amber-500/20 rounded-full hidden md:block" />
-          <div className="absolute right-32 top-1/4 w-16 h-16 bg-teal-500/10 rounded-lg rotate-12 hidden md:block" />
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div className="flex items-center gap-4">
+              <div className="w-16 h-16 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full flex items-center justify-center text-white font-bold text-xl ring-2 ring-amber-400/20">
+                AD
+              </div>
+              <div>
+                <h2 className="text-2xl sm:text-3xl font-bold text-white">
+                  Afikri Djati
+                </h2>
+                <div className="flex items-center gap-2 mt-2">
+                  <span className="px-3 py-1 bg-slate-700 text-sm text-gray-300 rounded-full">
+                    Grade 9
+                  </span>
+                  <span className="px-3 py-1 bg-slate-700 text-sm text-gray-300 rounded-full">
+                    Professional Class
+                  </span>
+                  <span className="px-3 py-1 bg-green-500/20 text-green-400 text-sm rounded-full font-medium">
+                    Active Student
+                  </span>
+                  <span className="px-3 py-1 bg-purple-500/20 text-purple-400 text-sm rounded-full font-medium">
+                    English Advanced Track
+                  </span>
+                </div>
+              </div>
+            </div>
+            <button className="px-6 py-2.5 bg-purple-600 hover:bg-purple-500 text-white rounded-lg font-semibold transition-colors">
+              Message
+            </button>
+          </div>
 
-          <div className="relative z-10 max-w-xl">
-            <p className="text-amber-400 font-medium mb-2 flex items-center gap-2">
-              Welcome Back 👋
-            </p>
-            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-6">
-              Corey George
-            </h2>
-            <Link
-              to="#"
-              className="inline-flex items-center gap-2 text-amber-400 hover:text-amber-300 font-medium transition-colors"
-            >
-              Go back to the course <ChevronRightIcon className="w-4 h-4" />
-            </Link>
+          {/* Progress Bars */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-8 pt-8 border-t border-slate-700">
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm font-medium text-gray-400">Writing</span>
+                <span className="text-sm font-bold text-white">68%</span>
+              </div>
+              <div className="w-full bg-slate-700 rounded-full h-2 overflow-hidden">
+                <div className="bg-yellow-400 h-full rounded-full" style={{width: '68%'}}></div>
+              </div>
+            </div>
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm font-medium text-gray-400">Reading</span>
+                <span className="text-sm font-bold text-white">84%</span>
+              </div>
+              <div className="w-full bg-slate-700 rounded-full h-2 overflow-hidden">
+                <div className="bg-green-500 h-full rounded-full" style={{width: '84%'}}></div>
+              </div>
+            </div>
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm font-medium text-gray-400">Listening</span>
+                <span className="text-sm font-bold text-white">92%</span>
+              </div>
+              <div className="w-full bg-slate-700 rounded-full h-2 overflow-hidden">
+                <div className="bg-blue-500 h-full rounded-full" style={{width: '92%'}}></div>
+              </div>
+            </div>
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm font-medium text-gray-400">Speaking</span>
+                <span className="text-sm font-bold text-white">75%</span>
+              </div>
+              <div className="w-full bg-slate-700 rounded-full h-2 overflow-hidden">
+                <div className="bg-orange-500 h-full rounded-full" style={{width: '75%'}}></div>
+              </div>
+            </div>
           </div>
         </motion.div>
 
-        {/* Stats Row */}
+        {/* Key Metrics Row */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mb-8">
-          <CircularProgress
-            percentage={67}
-            color="text-amber-500"
-            label="Weekly Analysis"
-            subtitle="5 hrs 12 min"
-          />
-          <CircularProgress
-            percentage={84}
-            color="text-teal-500"
-            label="Total Questions"
-            subtitle="1,247 Completed"
-          />
-          <CircularProgress
-            percentage={72}
-            color="text-purple-500"
-            label="Course Progress"
-            subtitle="3 Subjects Active"
-          />
+          {/* Intelligence Index Card */}
+          <div className="bg-slate-900 border border-slate-700 rounded-2xl p-6">
+            <div className="flex items-start justify-between mb-4">
+              <div className="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center">
+                <span className="text-xl">🧠</span>
+              </div>
+              <button className="text-gray-500 hover:text-white text-xl">ⓘ</button>
+            </div>
+            <h3 className="text-3xl font-bold text-white mb-1">92.4</h3>
+            <p className="text-gray-400 text-sm font-medium mb-3 uppercase tracking-wide">INTELLIGENCE INDEX</p>
+            <p className="text-green-400 text-sm font-semibold">↗ 1.2% vs last week</p>
+          </div>
+
+          {/* Focus Stability Card */}
+          <div className="bg-slate-900 border border-slate-700 rounded-2xl p-6">
+            <div className="flex items-start justify-between mb-4">
+              <div className="w-12 h-12 bg-pink-500/20 rounded-xl flex items-center justify-center">
+                <span className="text-xl">📌</span>
+              </div>
+              <button className="text-gray-500 hover:text-white text-xl">ⓘ</button>
+            </div>
+            <h3 className="text-3xl font-bold text-white mb-1">88.1</h3>
+            <p className="text-gray-400 text-sm font-medium mb-3 uppercase tracking-wide">FOCUS STABILITY</p>
+            <p className="text-red-400 text-sm font-semibold">↘ 0.4% vs last week</p>
+          </div>
+
+          {/* Cognitive Load Card */}
+          <div className="bg-slate-900 border border-slate-700 rounded-2xl p-6">
+            <div className="flex items-start justify-between mb-4">
+              <div className="w-12 h-12 bg-green-500/20 rounded-xl flex items-center justify-center">
+                <span className="text-xl">✓</span>
+              </div>
+              <button className="text-gray-500 hover:text-white text-xl">ⓘ</button>
+            </div>
+            <h3 className="text-2xl font-bold text-white mb-1">Normal</h3>
+            <p className="text-gray-400 text-sm font-medium mb-3 uppercase tracking-wide">COGNITIVE LOAD</p>
+            <p className="text-gray-400 text-sm font-semibold">Optimal Range</p>
+          </div>
         </div>
 
-        {/* Two Column Layout Below */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Left Column: Recent Practice Table */}
-          <div className="lg:col-span-2 bg-[#111827] border border-gray-800 rounded-2xl p-6">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-lg font-bold">Recent Practice Sessions</h2>
-              <a
-                href="#"
-                className="text-sm text-gray-400 hover:text-amber-400 transition-colors flex items-center gap-1"
-              >
-                View all <ChevronRightIcon className="w-4 h-4" />
-              </a>
+        {/* Exam Readiness Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
+          {/* Exam Readiness Prediction */}
+          <div className="bg-slate-900 border border-slate-700 rounded-2xl p-6 col-span-1">
+            <h3 className="text-sm font-medium text-gray-400 uppercase tracking-wide mb-4">
+              EXAM READINESS PREDICTION
+            </h3>
+            <p className="text-sm text-gray-400 mb-2">Exam Target: IELTS Band 7</p>
+            <div className="relative w-full h-32 mb-4">
+              <svg viewBox="0 0 100 100" className="w-full h-full">
+                <path d="M 50 50 L 50 10" stroke="#1e293b" strokeWidth="2" fill="none"/>
+                <circle cx="50" cy="50" r="35" fill="none" stroke="#1e293b" strokeWidth="3"/>
+                <circle cx="50" cy="50" r="30" fill="none" stroke="#f97316" strokeWidth="6" strokeDasharray="165 345" strokeLinecap="round" transform="rotate(-90 50 50)"/>
+                <text x="50" y="55" textAnchor="middle" fontSize="20" fontWeight="bold" fill="white">78%</text>
+              </svg>
             </div>
+            <p className="text-xs text-gray-400">Ready in 5-7 Weeks (if current consistency maintained)</p>
+          </div>
 
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse">
-                <thead>
-                  <tr className="text-gray-500 text-sm border-b border-gray-800">
-                    <th className="pb-3 font-medium">Subject name</th>
-                    <th className="pb-3 font-medium">Date</th>
-                    <th className="pb-3 font-medium">Score</th>
-                    <th className="pb-3 font-medium">Type</th>
-                    <th className="pb-3 font-medium">Save</th>
-                  </tr>
-                </thead>
-                <tbody className="text-sm">
-                  {[
-                    {
-                      name: 'Basics of Kinematics',
-                      date: 'Feb 12',
-                      score: '15/20',
-                      type: 'QUIZ',
-                      color: 'bg-blue-500',
-                    },
-                    {
-                      name: 'Calculus Integration',
-                      date: 'Feb 14',
-                      score: '07/10',
-                      type: 'PRACTICE',
-                      color: 'bg-amber-500',
-                    },
-                    {
-                      name: 'Chemical Bonding',
-                      date: 'Feb 15',
-                      score: '18/20',
-                      type: 'EXAM',
-                      color: 'bg-purple-500',
-                    },
-                    {
-                      name: 'Thermodynamics Laws',
-                      date: 'Feb 18',
-                      score: '12/15',
-                      type: 'QUIZ',
-                      color: 'bg-teal-500',
-                    },
-                  ].map((row, i) => (
-                    <tr
-                      key={i}
-                      className="border-b border-gray-800/50 hover:bg-gray-800/20 transition-colors"
-                    >
-                      <td className="py-4">
-                        <div className="flex items-center gap-3">
-                          <div
-                            className={`w-8 h-8 rounded-lg ${row.color} bg-opacity-20 flex items-center justify-center`}
-                          >
-                            <BookOpenIcon
-                              className={`w-4 h-4 ${row.color.replace('bg-', 'text-')}`}
-                            />
-                          </div>
-                          <span className="font-medium text-gray-200">
-                            {row.name}
-                          </span>
-                        </div>
-                      </td>
-                      <td className="py-4 text-gray-400">{row.date}</td>
-                      <td className="py-4 font-medium">{row.score}</td>
-                      <td className="py-4">
-                        <span className="px-2.5 py-1 bg-gray-800 text-gray-300 rounded-md text-xs font-semibold tracking-wide">
-                          {row.type}
-                        </span>
-                      </td>
-                      <td className="py-4">
-                        <button className="text-gray-500 hover:text-amber-400 transition-colors">
-                          <BookmarkIcon className="w-4 h-4" />
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+          {/* IELTS Writing Task 2 */}
+          <div className="bg-slate-900 border border-slate-700 rounded-2xl p-4 col-span-1">
+            <div className="flex items-start justify-between mb-3">
+              <span className="text-xs font-medium text-orange-400 bg-orange-500/20 px-2 py-1 rounded">Upcoming</span>
+            </div>
+            <h4 className="text-sm font-semibold text-white mb-2">IELTS Writing Task 2 Practice</h4>
+            <p className="text-xs text-gray-400 mb-3">Pay close attention to the structure of your arguments and work on enhancing...</p>
+            <div className="flex items-center justify-between text-xs text-gray-500">
+              <span>02 Mar</span>
+              <span>07:00 pm</span>
+              <span>120 mins</span>
             </div>
           </div>
 
-          {/* Right Column: Schedule & Performance */}
-          <div className="space-y-6">
-            {/* Upcoming Classes */}
-            <div className="bg-[#111827] border border-gray-800 rounded-2xl p-6">
-              <h2 className="text-lg font-bold mb-6">Upcoming Classes</h2>
-              <div className="space-y-4 mb-6">
-                <div className="flex gap-4">
-                  <div className="text-gray-400 font-medium pt-1 w-12">
-                    10:23
-                  </div>
-                  <div className="flex-1 bg-gray-800/30 border border-gray-800 rounded-xl p-3">
-                    <h4 className="font-semibold text-gray-200 mb-1 flex items-center gap-2">
-                      Programming Class{' '}
-                      <CheckCircle2Icon className="w-4 h-4 text-blue-400" />
-                    </h4>
-                    <p className="text-xs text-amber-400 flex items-center gap-1">
-                      <VideoIcon className="w-3 h-3" /> Online - Zoom Meeting
-                    </p>
-                  </div>
-                </div>
-                <div className="flex gap-4">
-                  <div className="text-gray-400 font-medium pt-1 w-12">
-                    14:00
-                  </div>
-                  <div className="flex-1 bg-gray-800/30 border border-gray-800 rounded-xl p-3">
-                    <h4 className="font-semibold text-gray-200 mb-1">
-                      Physics Lab
-                    </h4>
-                    <p className="text-xs text-gray-400 flex items-center gap-1">
-                      <MapPinIcon className="w-3 h-3" /> Room 204
-                    </p>
-                  </div>
+          {/* Grammar Reinforcement */}
+          <div className="bg-slate-900 border border-slate-700 rounded-2xl p-4 col-span-1">
+            <div className="flex items-start justify-between mb-3">
+              <span className="text-xs font-medium text-purple-400 bg-purple-500/20 px-2 py-1 rounded">Pending</span>
+            </div>
+            <h4 className="text-sm font-semibold text-white mb-2">Grammar Reinforcement</h4>
+            <p className="text-xs text-gray-400 mb-3">Take the time to thoroughly review grammar assignments and provide...</p>
+            <div className="flex items-center justify-between text-xs text-gray-500">
+              <span>03 Mar</span>
+              <span>05:00 pm</span>
+              <span>90 mins</span>
+            </div>
+          </div>
+
+          {/* Vocabulary Boost */}
+          <div className="bg-slate-900 border border-slate-700 rounded-2xl p-4 col-span-1">
+            <div className="flex items-start justify-between mb-3">
+              <span className="text-xs font-medium text-teal-400 bg-teal-500/20 px-2 py-1 rounded">Vocabulary</span>
+            </div>
+            <h4 className="text-sm font-semibold text-white mb-2">Vocabulary Boost</h4>
+            <p className="text-xs text-gray-400 mb-3">Expand your range of academic vocabulary for better expression...</p>
+            <div className="flex items-center justify-between text-xs text-gray-500">
+              <span>04 Mar</span>
+              <span>06:00 pm</span>
+              <span>60 mins</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Middle Section: AI Diagnosis & Key Metrics */}
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
+          {/* AI Diagnosis */}
+          <div className="bg-slate-900 border border-slate-700 rounded-2xl p-6 col-span-1">
+            <div className="flex items-start justify-between mb-4">
+              <h3 className="text-sm font-medium text-gray-400 uppercase tracking-wide">AI DIAGNOSIS</h3>
+              <button className="text-gray-500 hover:text-white">⋮</button>
+            </div>
+            <div className="space-y-4 mb-6">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-blue-500/20 rounded-full flex items-center justify-center text-blue-400 text-sm font-bold">24</div>
+                <div>
+                  <p className="text-sm font-semibold text-white">Scans run</p>
+                  <p className="text-xs text-gray-400">This month</p>
                 </div>
               </div>
-              <button className="w-full text-sm font-medium text-gray-400 hover:text-white transition-colors">
-                Show All
-              </button>
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-red-500/20 rounded-full flex items-center justify-center text-red-400 text-sm font-bold">3</div>
+                <div>
+                  <p className="text-sm font-semibold text-white">Anomalies</p>
+                  <p className="text-xs text-gray-400">Flagged</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-green-500/20 rounded-full flex items-center justify-center text-green-400 text-sm font-bold">A+</div>
+                <div>
+                  <p className="text-sm font-semibold text-white">Score</p>
+                  <p className="text-xs text-gray-400">Overall</p>
+                </div>
+              </div>
+            </div>
+            <p className="text-xs text-gray-500 mb-4">Last scan: 2 hrs ago</p>
+            <button className="w-full py-2.5 bg-purple-600 hover:bg-purple-500 text-white text-sm font-medium rounded-lg transition-colors flex items-center justify-center gap-2">
+              ▶ Run Diagnostic
+            </button>
+          </div>
+
+          {/* Attendance & Engagement */}
+          <div className="bg-slate-900 border border-slate-700 rounded-2xl p-6 col-span-1">
+            <div className="flex items-start justify-between mb-6">
+              <h3 className="text-sm font-medium text-gray-400 uppercase tracking-wide">ATTENDANCE & ENGAGEMENT</h3>
+              <button className="text-gray-500 hover:text-white">ⓘ</button>
+            </div>
+            <div className="flex justify-center mb-6">
+              <div className="relative w-32 h-32">
+                <svg viewBox="0 0 100 100" className="w-full h-full transform -rotate-90">
+                  <circle cx="50" cy="50" r="40" fill="none" stroke="#1e293b" strokeWidth="8"/>
+                  <circle cx="50" cy="50" r="40" fill="none" stroke="#f97316" strokeWidth="8" strokeDasharray="235.5 376.8" strokeLinecap="round"/>
+                </svg>
+                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                  <p className="text-2xl font-bold text-orange-500">94</p>
+                  <p className="text-xs text-gray-400">%</p>
+                </div>
+              </div>
+            </div>
+            <div className="text-center">
+              <p className="text-sm font-semibold text-white mb-2">Attendance Rate</p>
+              <div className="flex justify-center gap-4 text-xs text-gray-400">
+                <span>28 /30</span>
+                <span>Attended</span>
+              </div>
+            </div>
+            <p className="text-xs text-gray-500 text-center mt-3">12 Feb 25</p>
+            <p className="text-xs text-gray-500 text-center">Last Absence</p>
+          </div>
+
+          {/* Billing Overview */}
+          <div className="bg-slate-900 border border-slate-700 rounded-2xl p-6 col-span-1">
+            <h3 className="text-sm font-medium text-gray-400 uppercase tracking-wide mb-6">BILLING OVERVIEW</h3>
+            <div className="space-y-3 mb-4">
+              <div className="flex justify-between items-center text-sm">
+                <span className="text-gray-400">Outstanding Balance</span>
+                <span className="text-white font-semibold">Rp 1.250.000</span>
+              </div>
+              <div className="flex justify-between items-center text-sm">
+                <span className="text-gray-400">Next Invoice</span>
+                <span className="text-white font-semibold">15 Mar 2026</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-green-500"></span>
+                <span className="text-sm text-green-400 font-medium">On Schedule</span>
+              </div>
+            </div>
+            <div className="space-y-2 mb-4">
+              <div className="flex justify-between text-xs text-gray-400 mb-1">
+                <span>Classroom</span>
+                <span>540K</span>
+              </div>
+              <div className="w-full bg-slate-800 rounded-full h-2">
+                <div className="bg-blue-500 h-2 rounded-full" style={{width: '45%'}}></div>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <div className="flex justify-between text-xs text-gray-400 mb-1">
+                <span>Lecture</span>
+                <span>1.2M</span>
+              </div>
+              <div className="w-full bg-slate-800 rounded-full h-2">
+                <div className="bg-amber-500 h-2 rounded-full" style={{width: '65%'}}></div>
+              </div>
+            </div>
+            <div className="space-y-2 mt-2">
+              <div className="flex justify-between text-xs text-gray-400 mb-1">
+                <span>Services</span>
+                <span>350K</span>
+              </div>
+              <div className="w-full bg-slate-800 rounded-full h-2">
+                <div className="bg-orange-500 h-2 rounded-full" style={{width: '35%'}}></div>
+              </div>
+            </div>
+          </div>
+
+          {/* Learning Goal Tracker */}
+          <div className="bg-slate-900 border border-slate-700 rounded-2xl p-6 col-span-1">
+            <div className="flex items-start justify-between mb-4">
+              <h3 className="text-sm font-medium text-gray-400 uppercase tracking-wide">LEARNING GOAL TRACKER</h3>
+              <button className="text-gray-500 hover:text-white">⋮</button>
+            </div>
+            <div className="space-y-3 mb-6">
+              <div>
+                <div className="flex justify-between items-center mb-1">
+                  <p className="text-xs font-medium text-white">Writing</p>
+                  <span className="text-xs text-gray-400">8%</span>
+                </div>
+                <div className="w-full bg-slate-800 rounded-full h-1.5">
+                  <div className="bg-orange-500 h-1.5 rounded-full" style={{width: '84%'}}></div>
+                </div>
+              </div>
+              <div className="border-t border-slate-700 pt-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-xs font-medium text-gray-500">On Track - 6 Weeks</span>
+                  <span className="w-2 h-2 rounded-full bg-green-500"></span>
+                </div>
+              </div>
+            </div>
+            <p className="text-xs text-gray-500 text-center">Last updated: Feb 15, 2025</p>
+          </div>
+        </div>
+
+        {/* Neural Session - Practice Activities */}
+        <div className="bg-slate-900 border border-slate-700 rounded-2xl p-6 mb-8">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-lg font-bold text-white">NEURAL SESSION</h3>
+            <button className="text-gray-400 hover:text-white">+</button>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* Strategic Debate */}
+            <div className="bg-slate-800 border border-slate-700 rounded-xl p-4">
+              <div className="flex items-start justify-between mb-3">
+                <h4 className="text-sm font-semibold text-white">Strategic Debate</h4>
+                <span className="text-xs font-medium text-blue-400 bg-blue-500/20 px-2 py-1 rounded">AI Optimized</span>
+              </div>
+              <div className="flex items-center gap-2 text-xs text-gray-400 mb-3">
+                <span>14:00</span>
+                <span className="text-gray-600">|</span>
+                <span>02 Mar</span>
+                <span className="text-gray-600">|</span>
+                <span>25 min</span>
+              </div>
             </div>
 
-            {/* Performance Gauge */}
-            <div className="bg-[#111827] border border-gray-800 rounded-2xl p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-lg font-bold">Performance</h2>
-                <button className="flex items-center gap-1 text-xs text-gray-400 bg-gray-800 px-2 py-1 rounded-md">
-                  Monthly <ChevronDownIcon className="w-3 h-3" />
-                </button>
+            {/* Writing Reconstruction */}
+            <div className="bg-slate-800 border border-slate-700 rounded-xl p-4">
+              <div className="flex items-start justify-between mb-3">
+                <h4 className="text-sm font-semibold text-white">Writing Reconstruction</h4>
+                <span className="text-xs font-medium text-purple-400 bg-purple-500/20 px-2 py-1 rounded">High Load</span>
               </div>
-
-              <div className="flex items-center gap-4 mb-6 text-xs text-gray-400">
-                <div className="flex items-center gap-1.5">
-                  <span className="w-2 h-2 bg-blue-500 rounded-full" /> Point
-                  Progress
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <span className="w-2 h-2 bg-amber-500 rounded-full" /> Point
-                  Decrease
-                </div>
+              <div className="flex items-center gap-2 text-xs text-gray-400 mb-3">
+                <span>09:30</span>
+                <span className="text-gray-600">|</span>
+                <span>02 Mar</span>
+                <span className="text-gray-600">|</span>
+                <span>60 min</span>
               </div>
+            </div>
 
-              <div className="relative w-48 h-24 mx-auto mb-4 overflow-hidden">
-                {/* SVG Semi-circle gauge */}
-                <svg
-                  viewBox="0 0 100 50"
-                  className="w-full h-full overflow-visible"
-                >
-                  <path
-                    d="M 10 50 A 40 40 0 0 1 90 50"
-                    fill="none"
-                    stroke="#1f2937"
-                    strokeWidth="8"
-                    strokeLinecap="round"
-                  />
-                  <path
-                    d="M 10 50 A 40 40 0 0 1 70 15"
-                    fill="none"
-                    stroke="#3b82f6"
-                    strokeWidth="8"
-                    strokeLinecap="round"
-                  />
-                  {/* Needle */}
-                  <line
-                    x1="50"
-                    y1="50"
-                    x2="65"
-                    y2="25"
-                    stroke="#f59e0b"
-                    strokeWidth="3"
-                    strokeLinecap="round"
-                  />
-                  <circle cx="50" cy="50" r="4" fill="#f59e0b" />
-                  <circle cx="50" cy="50" r="2" fill="#111827" />
-                </svg>
+            {/* Cognitive Stress Test */}
+            <div className="bg-slate-800 border border-slate-700 rounded-xl p-4">
+              <div className="flex items-start justify-between mb-3">
+                <h4 className="text-sm font-semibold text-white">Cognitive Stress Test</h4>
+                <span className="text-xs font-medium text-green-400 bg-green-500/20 px-2 py-1 rounded">Simulation</span>
               </div>
-
-              <div className="text-center">
-                <p className="text-gray-400 text-sm">
-                  Your Point:{' '}
-                  <span className="text-white font-bold text-lg">8,966</span>
-                </p>
+              <div className="flex items-center gap-2 text-xs text-gray-400 mb-3">
+                <span>14:00</span>
+                <span className="text-gray-600">|</span>
+                <span>02 Mar</span>
+                <span className="text-gray-600">|</span>
+                <span>30 min</span>
               </div>
             </div>
           </div>
