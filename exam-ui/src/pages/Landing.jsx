@@ -311,12 +311,13 @@ export default function Landing() {
                   <span className="text-amber-400">15K+</span> Questions
                 </div>
                 <div className="bg-gray-800/50 px-3 py-1.5 rounded-lg text-sm font-medium text-gray-300">
-                  All Levels
+                  S.6 and S.4
                 </div>
               </div>
+              <Link to="/login">
               <button className="w-full py-3 bg-gray-800 hover:bg-gray-700 text-white rounded-xl font-medium transition-colors flex items-center justify-center gap-2">
                 Start Practicing <ArrowRightIcon className="w-4 h-4" />
-              </button>
+              </button></Link>
             </motion.div>
 
             {/* Mathematics Card */}
@@ -352,12 +353,13 @@ export default function Landing() {
                   <span className="text-amber-400">20K+</span> Questions
                 </div>
                 <div className="bg-gray-800/50 px-3 py-1.5 rounded-lg text-sm font-medium text-gray-300">
-                  All Levels
+                  S.6 and S.4
                 </div>
               </div>
+              <Link to="/login">
               <button className="w-full py-3 bg-amber-500 hover:bg-amber-400 text-gray-900 rounded-xl font-semibold transition-colors flex items-center justify-center gap-2">
                 Start Practicing <ArrowRightIcon className="w-4 h-4" />
-              </button>
+              </button></Link>
             </motion.div>
 
             {/* Chemistry Card */}
@@ -436,8 +438,7 @@ export default function Landing() {
 
           <div className="relative">
             {/* Connecting line for desktop */}
-            <div className="hidden md:block absolute top-1/2 left-0 w-full h-0.5 bg-gray-800 -translate-y-1/2 z-0" />
-
+            
             <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8 relative z-10">
               {[
                 {
