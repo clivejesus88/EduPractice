@@ -1,5 +1,5 @@
-import { Dashboard } from "@/component/ui/dashboard-with-collapsible-sidebar";
+import { Layout } from "@/component/ui/Layout";
 
 export default function DashboardPage(){
-    return <Dashboard />;
+    return <Layout />;
 }

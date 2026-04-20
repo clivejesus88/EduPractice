@@ -5,7 +5,8 @@ import Landing from "./pages/Landing";
 import NotFoundPage from "./pages/NotFoundPage";
 import Login from "./pages/Login";
 import React from "react";
-import Dashboard from "./pages/Dashboard";
+import DashboardPage from "./pages/Dashboard";
+import Practice from "@/component/ui/Practice";
 
 const router = createBrowserRouter([
   {
@@ -20,7 +21,12 @@ const router = createBrowserRouter([
   },
   {
     path: "/dashboard",
-    element: <Dashboard />,
+    element: <DashboardPage />,
+    errorElement: <NotFoundPage />
+  },
+  {
+    path: "/practice",
+    element: <Practice />,
     errorElement: <NotFoundPage />
   }
 ])
