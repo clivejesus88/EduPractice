@@ -361,49 +361,6 @@ export default function Landing() {
                 Start Practicing <ArrowRightIcon className="w-4 h-4" />
               </button></Link>
             </motion.div>
-
-            {/* Chemistry Card */}
-            <motion.div
-              className="bg-[#111827] border border-gray-800 rounded-2xl p-6 sm:p-8 flex flex-col h-full hover:border-amber-500/30 transition-all relative"
-              initial={{
-                opacity: 0,
-                y: 20,
-              }}
-              whileInView={{
-                opacity: 1,
-                y: 0,
-              }}
-              viewport={{
-                once: true,
-              }}
-              transition={{
-                delay: 0.3,
-              }}
-            >
-              <div className="absolute top-6 right-6 bg-teal-500/20 text-teal-400 text-xs font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">
-                Coming Soon
-              </div>
-              <div className="w-14 h-14 bg-purple-500/10 rounded-xl flex items-center justify-center mb-6">
-                <FlaskConicalIcon className="w-7 h-7 text-purple-400" />
-              </div>
-              <h3 className="text-xl sm:text-2xl font-bold mb-3 text-gray-300">
-                Chemistry
-              </h3>
-              <p className="text-gray-500 mb-6 flex-grow">
-                Organic, Inorganic, Physical Chemistry, Biochemistry and more.
-              </p>
-              <div className="flex items-center gap-4 mb-8 opacity-50">
-                <div className="bg-gray-800/50 px-3 py-1.5 rounded-lg text-sm font-medium">
-                  <span className="text-gray-400">15K+</span> Questions
-                </div>
-              </div>
-              <button
-                disabled
-                className="w-full py-3 bg-gray-800/50 text-gray-500 rounded-xl font-medium cursor-not-allowed flex items-center justify-center gap-2"
-              >
-                Notify Me
-              </button>
-            </motion.div>
           </div>
         </div>
       </section>

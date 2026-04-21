@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
 
-export  function Layout() {
+export  function Layout({ children }) {
   const location = useLocation();
 
   const navItems = [
@@ -122,7 +122,7 @@ export  function Layout() {
 
         {/* Dynamic Route Content container */}
         <div className="flex-1 overflow-hidden z-10 flex flex-col relative">
-          <Outlet />
+          {children ? children : <Outlet />}
         </div>
       </main>
 

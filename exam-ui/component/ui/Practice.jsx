@@ -108,6 +108,8 @@ const DrawingCanvas = ({ isReadOnly }) => {
 };
 
 export default function Practice() {
+  const [step, setStep] = useState('topics'); // topics | workboard
+  const [selectedTopic, setSelectedTopic] = useState(null);
   const [activeTab, setActiveTab] = useState('canvas');
   const [aiState, setAiState] = useState('idle'); // idle | analyzing | feedback
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -116,6 +118,39 @@ export default function Practice() {
     { role: 'ai', content: "Hello Sarah! I'm Maestro. I'm here if you have any follow-up questions about this scenario or need a hint." }
   ]);
   const messagesEndRef = useRef(null);
+
+  // Available topics
+  const topics = [
+    {
+      id: 'physics',
+      name: 'Physics',
+      description: 'Mechanics, Thermodynamics, Waves, and more',
+      icon: 'solar:flash-bold',
+      color: 'from-blue-500 to-cyan-500',
+      questions: 24,
+      difficulty: 'All Levels'
+    },
+    {
+      id: 'mathematics',
+      name: 'Mathematics',
+      description: 'Algebra, Geometry, Calculus, Statistics',
+      icon: 'solar:calculator-bold',
+      color: 'from-rose-500 to-pink-500',
+      questions: 18,
+      difficulty: 'All Levels'
+    }
+  ];
+
+  const handleTopicSelect = (topic) => {
+    setSelectedTopic(topic);
+    setStep('workboard');
+  };
+
+  const handleBackToTopics = () => {
+    setStep('topics');
+    setSelectedTopic(null);
+    setAiState('idle');
+  };
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -157,223 +192,316 @@ export default function Practice() {
   return (
     <div className="flex-1 flex flex-col lg:flex-row h-full relative overflow-hidden bg-[#0B1120] gap-4 lg:gap-0">
       
-      {/* Main Full-Width Content Area */}
-      <div className="flex-1 overflow-y-auto w-full p-4 sm:p-6 md:p-8 pb-32 sm:pb-24 lg:pb-8 h-full lg:pr-105">
-        <div className="max-w-3xl mx-auto space-y-6 md:space-y-8">
-          
-          {/* Header */}
-          <div>
-            <div className="flex items-center gap-1.5 sm:gap-2 text-[#f99c00] text-xs sm:text-sm font-medium mb-1.5 sm:mb-2">
-              <iconify-icon icon="solar:book-bookmark-linear" width="16" className="sm:hidden"></iconify-icon>
-              <iconify-icon icon="solar:book-bookmark-linear" width="18" className="hidden sm:block"></iconify-icon>
-              <span>Physics • Kinematics</span>
-            </div>
-            <h1 className="text-xl sm:text-2xl md:text-3xl font-medium tracking-tight text-white">Projectile Motion Scenario</h1>
-          </div>
-
-          {/* Scenario Details */}
-          <div className="bg-[#111827] border border-white/5 rounded-2xl p-4 sm:p-5 md:p-8 space-y-4 sm:space-y-5 md:space-y-6">
-            <p className="text-slate-300 leading-relaxed text-sm md:text-base">
-              A block of mass <span className="font-mono-custom text-[#f99c00]">m</span> is sliding down a frictionless incline angled at <span className="font-mono-custom text-[#f99c00]">θ</span> to the horizontal. Derive the equation for its acceleration and calculate its final velocity if it starts from rest and travels a distance <span className="font-mono-custom text-[#f99c00]">d</span>.
-            </p>
+      {/* Show Topics Selection or Workboard based on step */}
+      {step === 'topics' ? (
+        // TOPICS SELECTION SCREEN
+        <div className="flex-1 overflow-y-auto w-full p-4 sm:p-6 md:p-8 h-full">
+          <div className="max-w-4xl mx-auto space-y-8">
             
-            {/* Embedded Reference Image */}
-            <div className="rounded-xl overflow-hidden border border-white/10 bg-white/5">
-              <img 
-                src="https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/user-files/fd86d650-37a4-4a87-a832-38f8d246494a/c1d8f4a0-dfec-4aba-8c26-7c9d7cb813e2-pr.png?v=1776510287457" 
-                alt="Scenario Reference" 
-                className="w-full object-cover max-h-64 sm:max-h-80"
-              />
+            {/* Header */}
+            <div>
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-medium tracking-tight text-white mb-2">Choose a Topic</h1>
+              <p className="text-slate-400 text-sm md:text-base">Select a subject to practice and improve your skills</p>
+            </div>
+
+            {/* Topics Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-5">
+              {topics.map((topic) => (
+                <button
+                  key={topic.id}
+                  onClick={() => handleTopicSelect(topic)}
+                  className="group relative p-5 sm:p-6 rounded-2xl border border-white/10 bg-[#111827] hover:border-white/20 hover:bg-[#111827]/80 transition-all duration-300 text-left overflow-hidden"
+                >
+                  {/* Gradient background on hover */}
+                  <div className={`absolute inset-0 bg-linear-to-br ${topic.color} opacity-0 group-hover:opacity-5 transition-opacity duration-300`}></div>
+                  
+                  <div className="relative z-10">
+                    {/* Icon and Title Row */}
+                    <div className="flex items-start justify-between mb-3 sm:mb-4">
+                      <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-linear-to-br ${topic.color} flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                        <iconify-icon icon={topic.icon} width="24" className="sm:hidden"></iconify-icon>
+                        <iconify-icon icon={topic.icon} width="28" className="hidden sm:block"></iconify-icon>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-xs text-slate-400 font-medium">{topic.questions} Questions</p>
+                        <p className="text-xs text-slate-500">{topic.difficulty}</p>
+                      </div>
+                    </div>
+
+                    {/* Title */}
+                    <h3 className="text-lg sm:text-xl font-semibold text-white mb-1 group-hover:text-[#f99c00] transition-colors">{topic.name}</h3>
+                    
+                    {/* Description */}
+                    <p className="text-xs sm:text-sm text-slate-400 leading-relaxed mb-4">{topic.description}</p>
+
+                    {/* Footer */}
+                    <div className="flex items-center justify-between pt-3 sm:pt-4 border-t border-white/5 group-hover:border-white/10 transition-colors">
+                      <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">Start Practicing</span>
+                      <iconify-icon icon="solar:alt-arrow-right-linear" width="18" className="text-slate-400 group-hover:text-[#f99c00] group-hover:translate-x-1 transition-all duration-300"></iconify-icon>
+                    </div>
+                  </div>
+                </button>
+              ))}
+            </div>
+
+            {/* Info Cards Section */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8">
+              <div className="p-4 sm:p-5 rounded-xl bg-[#111827] border border-white/5 flex items-start gap-3">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-[#f99c00]/10 flex items-center justify-center text-[#f99c00] shrink-0">
+                  <iconify-icon icon="solar:star-bold" width="18" className="sm:hidden"></iconify-icon>
+                  <iconify-icon icon="solar:star-bold" width="20" className="hidden sm:block"></iconify-icon>
+                </div>
+                <div>
+                  <h4 className="text-sm font-medium text-white mb-1">Guided Learning</h4>
+                  <p className="text-xs text-slate-400">Get instant feedback from Maestro AI on your solutions</p>
+                </div>
+              </div>
+              <div className="p-4 sm:p-5 rounded-xl bg-[#111827] border border-white/5 flex items-start gap-3">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-500 shrink-0">
+                  <iconify-icon icon="solar:target-bold" width="18" className="sm:hidden"></iconify-icon>
+                  <iconify-icon icon="solar:target-bold" width="20" className="hidden sm:block"></iconify-icon>
+                </div>
+                <div>
+                  <h4 className="text-sm font-medium text-white mb-1">Track Progress</h4>
+                  <p className="text-xs text-slate-400">Monitor your improvement across all topics</p>
+                </div>
+              </div>
             </div>
           </div>
+        </div>
+      ) : (
+        // WORKBOARD SCREEN
+        <div className="flex-1 overflow-y-auto w-full p-4 sm:p-6 md:p-8 pb-32 sm:pb-24 lg:pb-8 h-full lg:pr-105">
+          <div className="max-w-3xl mx-auto space-y-6 md:space-y-8">
+            
+            {/* Header with Back Button */}
+            <div>
+              <button
+                onClick={handleBackToTopics}
+                className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors mb-4 text-sm"
+              >
+                <iconify-icon icon="solar:alt-arrow-left-linear" width="20"></iconify-icon>
+                <span>Back to Topics</span>
+              </button>
+              <div className="flex items-center gap-1.5 sm:gap-2 text-[#f99c00] text-xs sm:text-sm font-medium mb-1.5 sm:mb-2">
+                <iconify-icon icon="solar:book-bookmark-linear" width="16" className="sm:hidden"></iconify-icon>
+                <iconify-icon icon="solar:book-bookmark-linear" width="18" className="hidden sm:block"></iconify-icon>
+                <span>{selectedTopic?.name} • Kinematics</span>
+              </div>
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-medium tracking-tight text-white">Projectile Motion Scenario</h1>
+            </div>
 
-          {/* Answer Section */}
-          <div className="space-y-6">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <h3 className="text-lg font-medium text-white">Your Solution</h3>
+            {/* Scenario Details */}
+            <div className="bg-[#111827] border border-white/5 rounded-2xl p-4 sm:p-5 md:p-8 space-y-4 sm:space-y-5 md:space-y-6">
+              <p className="text-slate-300 leading-relaxed text-sm md:text-base">
+                A block of mass <span className="font-mono-custom text-[#f99c00]">m</span> is sliding down a frictionless incline angled at <span className="font-mono-custom text-[#f99c00]">θ</span> to the horizontal. Derive the equation for its acceleration and calculate its final velocity if it starts from rest and travels a distance <span className="font-mono-custom text-[#f99c00]">d</span>.
+              </p>
               
-              {/* Tabs */}
-              <div className="flex bg-[#111827] p-1 rounded-lg border border-white/5 self-start w-full xs:w-auto">
-                <button 
-                  onClick={() => setActiveTab('canvas')}
-                  className={`flex-1 sm:flex-none flex justify-center items-center gap-2 px-4 py-2 sm:py-1.5 rounded-md text-sm font-medium transition-all ${activeTab === 'canvas' ? 'bg-white/10 text-white shadow-sm' : 'text-slate-400 hover:text-slate-200'}`}
-                >
-                  <iconify-icon icon="solar:pen-linear" width="20" style={{ strokeWidth: 1 }}></iconify-icon>
-                  Draw
-                </button>
-                <button 
-                  onClick={() => setActiveTab('upload')}
-                  className={`flex-1 sm:flex-none flex justify-center items-center gap-2 px-4 py-2 sm:py-1.5 rounded-md text-sm font-medium transition-all ${activeTab === 'upload' ? 'bg-white/10 text-white shadow-sm' : 'text-slate-400 hover:text-slate-200'}`}
-                >
-                  <iconify-icon icon="solar:gallery-linear" width="20" style={{ strokeWidth: 1 }}></iconify-icon>
-                  Upload
-                </button>
+              {/* Embedded Reference Image */}
+              <div className="rounded-xl overflow-hidden border border-white/10 bg-white/5">
+                <img 
+                  src="https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/user-files/fd86d650-37a4-4a87-a832-38f8d246494a/c1d8f4a0-dfec-4aba-8c26-7c9d7cb813e2-pr.png?v=1776510287457" 
+                  alt="Scenario Reference" 
+                  className="w-full object-cover max-h-64 sm:max-h-80"
+                />
               </div>
             </div>
 
-            {/* Input Area */}
-            <div className="animate-fade-in-up">
-              {activeTab === 'canvas' ? (
-                <DrawingCanvas isReadOnly={aiState === 'analyzing' || aiState === 'feedback'} />
-              ) : (
-                <div className="w-full h-64 sm:h-80 md:h-96 rounded-xl border-2 border-dashed border-white/10 hover:border-[#f99c00]/50 bg-[#1A2234]/50 flex flex-col items-center justify-center text-center transition-colors cursor-pointer group">
-                  <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center text-slate-400 group-hover:text-[#f99c00] group-hover:scale-110 transition-all duration-300 mb-4">
-                    <iconify-icon icon="solar:upload-minimalistic-linear" width="24"></iconify-icon>
+            {/* Answer Section */}
+            <div className="space-y-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <h3 className="text-lg font-medium text-white">Your Solution</h3>
+                
+                {/* Tabs */}
+                <div className="flex bg-[#111827] p-1 rounded-lg border border-white/5 self-start w-full xs:w-auto">
+                  <button 
+                    onClick={() => setActiveTab('canvas')}
+                    className={`flex-1 sm:flex-none flex justify-center items-center gap-2 px-4 py-2 sm:py-1.5 rounded-md text-sm font-medium transition-all ${activeTab === 'canvas' ? 'bg-white/10 text-white shadow-sm' : 'text-slate-400 hover:text-slate-200'}`}
+                  >
+                    <iconify-icon icon="solar:pen-linear" width="20" style={{ strokeWidth: 1 }}></iconify-icon>
+                    Draw
+                  </button>
+                  <button 
+                    onClick={() => setActiveTab('upload')}
+                    className={`flex-1 sm:flex-none flex justify-center items-center gap-2 px-4 py-2 sm:py-1.5 rounded-md text-sm font-medium transition-all ${activeTab === 'upload' ? 'bg-white/10 text-white shadow-sm' : 'text-slate-400 hover:text-slate-200'}`}
+                  >
+                    <iconify-icon icon="solar:gallery-linear" width="20" style={{ strokeWidth: 1 }}></iconify-icon>
+                    Upload
+                  </button>
+                </div>
+              </div>
+
+              {/* Input Area */}
+              <div className="animate-fade-in-up">
+                {activeTab === 'canvas' ? (
+                  <DrawingCanvas isReadOnly={aiState === 'analyzing' || aiState === 'feedback'} />
+                ) : (
+                  <div className="w-full h-64 sm:h-80 md:h-96 rounded-xl border-2 border-dashed border-white/10 hover:border-[#f99c00]/50 bg-[#1A2234]/50 flex flex-col items-center justify-center text-center transition-colors cursor-pointer group">
+                    <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center text-slate-400 group-hover:text-[#f99c00] group-hover:scale-110 transition-all duration-300 mb-4">
+                      <iconify-icon icon="solar:upload-minimalistic-linear" width="24"></iconify-icon>
+                    </div>
+                    <p className="text-sm font-medium text-white mb-1">Click to upload or drag and drop</p>
+                    <p className="text-xs text-slate-500 max-w-xs">Upload a clear photo of your written solution. (PNG, JPG, PDF up to 10MB)</p>
                   </div>
-                  <p className="text-sm font-medium text-white mb-1">Click to upload or drag and drop</p>
-                  <p className="text-xs text-slate-500 max-w-xs">Upload a clear photo of your written solution. (PNG, JPG, PDF up to 10MB)</p>
+                )}
+              </div>
+
+              {/* Submit Action */}
+              {aiState !== 'feedback' && (
+                <div className="mt-4 sm:mt-6 flex flex-col-reverse sm:flex-row gap-3 justify-between">
+                  <button 
+                    onClick={handleSubmit}
+                    disabled={aiState !== 'idle'}
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#f99c00] text-[#0B1120] px-4 sm:px-6 py-2.5 sm:py-2.5 rounded-lg text-sm font-medium hover:bg-[#f99c00]/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {aiState === 'analyzing' ? (
+                      <>
+                        <iconify-icon icon="solar:loader-bold" width="20" className="animate-spin"></iconify-icon>
+                        <span className="hidden xs:inline">Analyzing...</span>
+                      </>
+                    ) : (
+                      <>
+                        <iconify-icon icon="solar:magic-stick-3-linear" width="20"></iconify-icon>
+                        <span className="hidden xs:inline">Submit for Evaluation</span>
+                        <span className="xs:hidden text-sm">Submit</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              )}
+
+              {/* Inline Feedback Section */}
+              {aiState === 'feedback' && (
+                <div className="mt-4 sm:mt-6 bg-[#111827] border border-emerald-500/20 rounded-2xl p-4 sm:p-5 md:p-6 animate-fade-in-up relative overflow-hidden shadow-[0_0_30px_rgba(16,185,129,0.05)]">
+                  <div className="absolute top-0 left-0 w-1 sm:w-1.5 h-full bg-emerald-500"></div>
+                  <div className="flex flex-col gap-3 sm:gap-4 md:items-start md:justify-between">
+                    <div className="flex-1">
+                      <h3 className="text-base sm:text-lg font-medium text-emerald-400 mb-2 sm:mb-3 flex items-center gap-2">
+                        <iconify-icon icon="solar:check-circle-bold" width="20" className="sm:hidden"></iconify-icon>
+                        <iconify-icon icon="solar:check-circle-bold" width="24" className="hidden sm:block"></iconify-icon>
+                        Solution Evaluated
+                      </h3>
+                      <div className="text-slate-300 text-xs sm:text-sm leading-relaxed mb-3 sm:mb-4 space-y-2 sm:space-y-3">
+                        <p>Your approach to breaking down the vector components is correct and your derivation for the acceleration is flawless.</p>
+                        <p>However, watch your units in the final substitution step. The final answer should be explicitly written in meters per second squared (<span className="font-mono-custom text-[#f99c00] bg-[#f99c00]/10 px-1 rounded">m/s²</span>).</p>
+                      </div>
+                    </div>
+                    
+                    <div className="shrink-0 flex flex-col items-center justify-center p-3 sm:p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 self-center sm:self-auto">
+                      <span className="text-2xl sm:text-3xl font-mono-custom font-bold text-emerald-400">85%</span>
+                      <span className="text-xs font-medium text-emerald-500/80 uppercase tracking-wider mt-1">Score</span>
+                    </div>
+                  </div>
+
+                  <div className="mt-4 sm:mt-6 pt-3 sm:pt-5 border-t border-white/5 flex flex-col sm:flex-row gap-2 sm:gap-3">
+                    <button onClick={() => setAiState('idle')} className="px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg border border-white/10 text-xs sm:text-sm font-medium text-slate-300 hover:text-white hover:bg-white/5 transition-colors w-full sm:w-auto">
+                      Try Again
+                    </button>
+                    <button onClick={() => setIsChatOpen(true)} className="px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg bg-[#f99c00]/10 text-[#f99c00] border border-[#f99c00]/20 text-xs sm:text-sm font-medium hover:bg-[#f99c00]/20 transition-colors flex items-center justify-center gap-2 w-full sm:w-auto">
+                      <iconify-icon icon="solar:chat-line-linear" width="18"></iconify-icon>
+                      <span className="hidden xs:inline">Follow up with Maestro</span>
+                      <span className="xs:hidden">Ask Maestro</span>
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
 
-            {/* Submit Action */}
-            {aiState !== 'feedback' && (
-              <div className="mt-4 sm:mt-6 flex flex-col-reverse sm:flex-row gap-3 justify-between">
-                <button 
-                  onClick={handleSubmit}
-                  disabled={aiState !== 'idle'}
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#f99c00] text-[#0B1120] px-4 sm:px-6 py-2.5 sm:py-2.5 rounded-lg text-sm font-medium hover:bg-[#f99c00]/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {aiState === 'analyzing' ? (
-                    <>
-                      <iconify-icon icon="solar:loader-bold" width="20" className="animate-spin"></iconify-icon>
-                      <span className="hidden xs:inline">Analyzing...</span>
-                    </>
-                  ) : (
-                    <>
-                      <iconify-icon icon="solar:magic-stick-3-linear" width="20"></iconify-icon>
-                      <span className="hidden xs:inline">Submit for Evaluation</span>
-                      <span className="xs:hidden text-sm">Submit</span>
-                    </>
-                  )}
-                </button>
-              </div>
-            )}
-
-            {/* Inline Feedback Section */}
-            {aiState === 'feedback' && (
-              <div className="mt-4 sm:mt-6 bg-[#111827] border border-emerald-500/20 rounded-2xl p-4 sm:p-5 md:p-6 animate-fade-in-up relative overflow-hidden shadow-[0_0_30px_rgba(16,185,129,0.05)]">
-                <div className="absolute top-0 left-0 w-1 sm:w-1.5 h-full bg-emerald-500"></div>
-                <div className="flex flex-col gap-3 sm:gap-4 md:items-start md:justify-between">
-                  <div className="flex-1">
-                    <h3 className="text-base sm:text-lg font-medium text-emerald-400 mb-2 sm:mb-3 flex items-center gap-2">
-                      <iconify-icon icon="solar:check-circle-bold" width="20" className="sm:hidden"></iconify-icon>
-                      <iconify-icon icon="solar:check-circle-bold" width="24" className="hidden sm:block"></iconify-icon>
-                      Solution Evaluated
-                    </h3>
-                    <div className="text-slate-300 text-xs sm:text-sm leading-relaxed mb-3 sm:mb-4 space-y-2 sm:space-y-3">
-                      <p>Your approach to breaking down the vector components is correct and your derivation for the acceleration is flawless.</p>
-                      <p>However, watch your units in the final substitution step. The final answer should be explicitly written in meters per second squared (<span className="font-mono-custom text-[#f99c00] bg-[#f99c00]/10 px-1 rounded">m/s²</span>).</p>
-                    </div>
-                  </div>
-                  
-                  <div className="shrink-0 flex flex-col items-center justify-center p-3 sm:p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 self-center sm:self-auto">
-                    <span className="text-2xl sm:text-3xl font-mono-custom font-bold text-emerald-400">85%</span>
-                    <span className="text-xs font-medium text-emerald-500/80 uppercase tracking-wider mt-1">Score</span>
-                  </div>
-                </div>
-
-                <div className="mt-4 sm:mt-6 pt-3 sm:pt-5 border-t border-white/5 flex flex-col sm:flex-row gap-2 sm:gap-3">
-                  <button onClick={() => setAiState('idle')} className="px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg border border-white/10 text-xs sm:text-sm font-medium text-slate-300 hover:text-white hover:bg-white/5 transition-colors w-full sm:w-auto">
-                    Try Again
-                  </button>
-                  <button onClick={() => setIsChatOpen(true)} className="px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg bg-[#f99c00]/10 text-[#f99c00] border border-[#f99c00]/20 text-xs sm:text-sm font-medium hover:bg-[#f99c00]/20 transition-colors flex items-center justify-center gap-2 w-full sm:w-auto">
-                    <iconify-icon icon="solar:chat-line-linear" width="18"></iconify-icon>
-                    <span className="hidden xs:inline">Follow up with Maestro</span>
-                    <span className="xs:hidden">Ask Maestro</span>
-                  </button>
-                </div>
-              </div>
-            )}
           </div>
-
         </div>
-      </div>
+      )}
 
-      {/* Floating Chat Toggle Button */}
-      <button
-        onClick={() => setIsChatOpen(true)}
-        className={`fixed lg:absolute right-4 bottom-24 lg:bottom-8 z-30 w-12 h-12 sm:w-14 sm:h-14 bg-[#f99c00] rounded-full flex items-center justify-center text-[#0B1120] shadow-[0_4px_20px_rgba(249,156,0,0.4)] hover:scale-105 transition-all duration-300 ${isChatOpen ? 'scale-0 opacity-0 pointer-events-none' : 'scale-100 opacity-100'}`}
-        aria-label="Open AI Tutor"
-      >
-        <iconify-icon icon="solar:magic-stick-3-bold" width="20" className="sm:hidden"></iconify-icon>
-        <iconify-icon icon="solar:magic-stick-3-bold" width="28" className="hidden sm:block"></iconify-icon>
-        <span className="absolute top-0 right-0 w-3 h-3 sm:w-3.5 sm:h-3.5 bg-rose-500 border-2 border-[#f99c00] rounded-full"></span>
-      </button>
+      {/* Floating Chat Toggle Button - Only show on workboard */}
+      {step === 'workboard' && (
+        <button
+          onClick={() => setIsChatOpen(true)}
+          className={`fixed lg:absolute right-4 bottom-24 lg:bottom-8 z-30 w-12 h-12 sm:w-14 sm:h-14 bg-[#f99c00] rounded-full flex items-center justify-center text-[#0B1120] shadow-[0_4px_20px_rgba(249,156,0,0.4)] hover:scale-105 transition-all duration-300 ${isChatOpen ? 'scale-0 opacity-0 pointer-events-none' : 'scale-100 opacity-100'}`}
+          aria-label="Open AI Tutor"
+        >
+          <iconify-icon icon="solar:magic-stick-3-bold" width="20" className="sm:hidden"></iconify-icon>
+          <iconify-icon icon="solar:magic-stick-3-bold" width="28" className="hidden sm:block"></iconify-icon>
+          <span className="absolute top-0 right-0 w-3 h-3 sm:w-3.5 sm:h-3.5 bg-rose-500 border-2 border-[#f99c00] rounded-full"></span>
+        </button>
+      )}
 
       {/* Mobile Backdrop for Chat Panel */}
-      {isChatOpen && (
+      {isChatOpen && step === 'workboard' && (
         <div 
           className="fixed inset-0 bg-[#0B1120]/60 backdrop-blur-sm z-55 lg:hidden"
           onClick={() => setIsChatOpen(false)}
         />
       )}
 
-      {/* Slide-over Maestro AI Chat Panel */}
-      <div className={`fixed lg:absolute top-0 bottom-0 right-0 z-60 w-full sm:w-105 lg:w-100 h-dvh lg:h-full bg-[#0B1120] lg:bg-[#0B1120]/95 backdrop-blur-xl border-l border-white/5 flex flex-col transition-transform duration-300 ease-in-out shadow-2xl ${isChatOpen ? 'translate-x-0' : 'translate-x-full lg:translate-x-0'}`}>
-        
-        {/* Panel Header */}
-        <div className="p-4 md:p-5 border-b border-white/5 flex items-center justify-between bg-[#111827] pt-safe lg:pt-4 md:pt-5 shrink-0 z-10 relative shadow-sm">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#f99c00] to-rose-500 flex items-center justify-center text-white shadow-[0_0_15px_rgba(249,156,0,0.2)]">
-              <iconify-icon icon="solar:magic-stick-3-bold" width="22"></iconify-icon>
-            </div>
-            <div>
-              <h3 className="text-base font-medium tracking-tight text-white flex items-center gap-2">
-                Maestro AI
-                <span className="flex h-2 w-2 relative">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                </span>
-              </h3>
-              <p className="text-xs text-slate-400">Follow-up Assistant</p>
-            </div>
-          </div>
-          <button 
-            onClick={() => setIsChatOpen(false)}
-            className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-500 hover:text-white hover:bg-white/5 transition-colors lg:hidden"
-          >
-            <iconify-icon icon="solar:close-circle-linear" width="24"></iconify-icon>
-          </button>
-        </div>
-
-        {/* Chat Conversation Area */}
-        <div className="flex-1 overflow-y-auto p-4 md:p-5 space-y-6">
-          {messages.map((msg, idx) => (
-            <div key={idx} className={`flex gap-3 max-w-[90%] ${msg.role === 'user' ? 'ml-auto flex-row-reverse' : ''} animate-fade-in-up`} style={{ animationDelay: `${Math.min(idx * 0.1, 0.3)}s` }}>
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${msg.role === 'user' ? 'border border-white/10 overflow-hidden' : 'bg-[#111827] text-[#f99c00] border border-white/5'}`}>
-                {msg.role === 'user' ? (
-                  <img src="https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/user-files/fd86d650-37a4-4a87-a832-38f8d246494a/a14eeb81-d59e-4bcb-a228-5249b5a17192-pp.png?v=1776510809689" alt="Sarah K." className="w-full h-full object-cover" />
-                ) : <iconify-icon icon="solar:magic-stick-3-linear" width="16"></iconify-icon>}
+      {/* Slide-over Maestro AI Chat Panel - Mobile Responsive */}
+      {step === 'workboard' && (
+        <div className={`fixed lg:absolute top-0 bottom-0 right-0 z-60 w-full sm:w-105 lg:w-100 h-dvh lg:h-full bg-[#0B1120] lg:bg-[#0B1120]/95 backdrop-blur-xl border-l border-white/5 flex flex-col transition-transform duration-300 ease-in-out shadow-2xl ${isChatOpen ? 'translate-x-0' : 'translate-x-full lg:translate-x-0'}`}>
+          
+          {/* Panel Header */}
+          <div className="p-3 sm:p-4 md:p-5 border-b border-white/5 flex items-center justify-between bg-[#111827] pt-safe lg:pt-4 md:pt-5 shrink-0 z-10 relative shadow-sm">
+            <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-linear-to-br from-[#f99c00] to-rose-500 flex items-center justify-center text-white shadow-[0_0_15px_rgba(249,156,0,0.2)] shrink-0">
+                <iconify-icon icon="solar:magic-stick-3-bold" width="18" className="sm:hidden"></iconify-icon>
+                <iconify-icon icon="solar:magic-stick-3-bold" width="22" className="hidden sm:block"></iconify-icon>
               </div>
-              <div className={`p-3.5 rounded-2xl text-sm leading-relaxed ${msg.role === 'user' ? 'bg-[#f99c00] text-[#0B1120] rounded-tr-sm' : 'bg-[#111827] border border-white/5 text-slate-300 rounded-tl-sm'}`}>
-                {msg.content}
+              <div className="min-w-0">
+                <h3 className="text-sm sm:text-base font-medium tracking-tight text-white flex items-center gap-2 truncate">
+                  Maestro AI
+                  <span className="flex h-2 w-2 relative shrink-0">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                  </span>
+                </h3>
+                <p className="text-xs text-slate-400 truncate">Follow-up Assistant</p>
               </div>
             </div>
-          ))}
-          <div ref={messagesEndRef} className="h-1" />
-        </div>
-
-        {/* Input Footer */}
-        <form onSubmit={handleChatSubmit} className="p-3 sm:p-4 border-t border-white/5 bg-[#111827] pb-[max(1rem,env(safe-area-inset-bottom))] sm:pb-4 shrink-0 z-10 relative shadow-[0_-4px_20px_rgba(0,0,0,0.2)]">
-          <div className="relative flex items-center gap-2">
-            <input 
-              type="text" 
-              value={chatInput}
-              onChange={(e) => setChatInput(e.target.value)}
-              placeholder="Ask Maestro a follow-up..." 
-              className="w-full bg-[#0B1120] border border-white/10 rounded-xl pl-4 pr-12 py-3.5 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-[#f99c00]/50 focus:ring-1 focus:ring-[#f99c00]/50 transition-all"
-            />
             <button 
-              type="submit"
-              disabled={!chatInput.trim()}
-              className="absolute right-2 w-9 h-9 flex items-center justify-center rounded-lg hover:bg-white/5 text-[#f99c00] transition-colors disabled:opacity-50 disabled:hover:bg-transparent"
+              onClick={() => setIsChatOpen(false)}
+              className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-500 hover:text-white hover:bg-white/5 transition-colors lg:hidden shrink-0"
             >
-              <iconify-icon icon="solar:plain-bold" width="22"></iconify-icon>
+              <iconify-icon icon="solar:close-circle-linear" width="24"></iconify-icon>
             </button>
           </div>
-        </form>
-      </div>
+
+          {/* Chat Conversation Area - Better mobile scrolling */}
+          <div className="flex-1 overflow-y-auto p-3 sm:p-4 md:p-5 space-y-4 sm:space-y-5 md:space-y-6">
+            {messages.map((msg, idx) => (
+              <div key={idx} className={`flex gap-2 sm:gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : ''} animate-fade-in-up`} style={{ animationDelay: `${Math.min(idx * 0.1, 0.3)}s` }}>
+                <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center shrink-0 ${msg.role === 'user' ? 'border border-white/10 overflow-hidden' : 'bg-[#111827] text-[#f99c00] border border-white/5'}`}>
+                  {msg.role === 'user' ? (
+                    <img src="https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/user-files/fd86d650-37a4-4a87-a832-38f8d246494a/a14eeb81-d59e-4bcb-a228-5249b5a17192-pp.png?v=1776510809689" alt="Sarah K." className="w-full h-full object-cover" />
+                  ) : <iconify-icon icon="solar:magic-stick-3-linear" width="16" className="sm:hidden"></iconify-icon>}
+                  {msg.role === 'ai' && <iconify-icon icon="solar:magic-stick-3-linear" width="18" className="hidden sm:block"></iconify-icon>}
+                </div>
+                <div className={`max-w-[85%] sm:max-w-[80%] p-2.5 sm:p-3 rounded-2xl text-xs sm:text-sm leading-relaxed wrap-break-word ${msg.role === 'user' ? 'bg-[#f99c00] text-[#0B1120] rounded-tr-sm font-medium' : 'bg-[#111827] border border-white/5 text-slate-300 rounded-tl-sm'}`}>
+                  {msg.content}
+                </div>
+              </div>
+            ))}
+            <div ref={messagesEndRef} className="h-1" />
+          </div>
+
+          {/* Input Footer - Mobile optimized */}
+          <form onSubmit={handleChatSubmit} className="p-2.5 sm:p-3 md:p-4 border-t border-white/5 bg-[#111827] pb-[max(0.625rem,env(safe-area-inset-bottom))] sm:pb-3 md:pb-4 shrink-0 z-10 relative shadow-[0_-4px_20px_rgba(0,0,0,0.2)]">
+            <div className="relative flex items-center gap-2">
+              <input 
+                type="text" 
+                value={chatInput}
+                onChange={(e) => setChatInput(e.target.value)}
+                placeholder="Ask Maestro..." 
+                className="w-full bg-[#0B1120] border border-white/10 rounded-xl pl-3 sm:pl-4 pr-10 sm:pr-12 py-2.5 sm:py-3 text-xs sm:text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-[#f99c00]/50 focus:ring-1 focus:ring-[#f99c00]/50 transition-all"
+              />
+              <button 
+                type="submit"
+                disabled={!chatInput.trim()}
+                className="absolute right-1.5 sm:right-2 w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-lg hover:bg-white/5 text-[#f99c00] transition-colors disabled:opacity-50 disabled:hover:bg-transparent"
+              >
+                <iconify-icon icon="solar:plain-bold" width="18" className="sm:hidden"></iconify-icon>
+                <iconify-icon icon="solar:plain-bold" width="22" className="hidden sm:block"></iconify-icon>
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
 
     </div>
   );

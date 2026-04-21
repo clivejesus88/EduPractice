@@ -142,15 +142,7 @@ export default function dashboardUI() {
                   </div>
                 </div>
                 
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs sm:text-sm font-medium text-slate-300">Chemistry</span>
-                    <span className="text-xs font-mono-custom text-slate-500">Not Started</span>
-                  </div>
-                  <div className="h-2 w-full bg-[#0B1120] rounded-full overflow-hidden border border-white/5">
-                    <div className="h-full bg-emerald-500 rounded-full" style={{ width: '0%' }}></div>
-                  </div>
-                </div>
+
               </div>
 
               <button className="w-full mt-6 sm:mt-8 py-2.5 rounded-lg border border-white/10 text-xs sm:text-sm font-medium text-slate-300 hover:text-white hover:bg-white/5 transition-colors">
