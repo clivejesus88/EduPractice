@@ -8,7 +8,7 @@ export default function Login() {
   const [password, setPassword] = useState('')
   const handleSubmit = (e) => {
     e.preventDefault()
-    navigate('/dashboard')
+    navigate('https://appedupractice.vercel.app')
   }
   return (
     <div className="min-h-screen w-full bg-[#0B1120] flex items-center justify-center px-4 sm:px-6 py-8 sm:py-12">
