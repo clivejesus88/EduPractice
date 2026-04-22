@@ -48,7 +48,7 @@ export default function Login() {
             Sign in to continue your learning journey
           </p>
 
-          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5" action="https://appedupractice.vercel.app" target='blank'>
+          <form className="space-y-4 sm:space-y-5" action="https://appedupractice.vercel.app" target='blank'>
             {/* Email Input */}
             <div>
               <label
