@@ -2,11 +2,10 @@ import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Link, useNavigate } from 'react-router-dom'
 import { GraduationCapIcon, MailIcon, LockIcon, UserIcon } from 'lucide-react'
-import { useSignUp } from '@clerk/react'
+import { supabase } from '../lib/supabaseClient'
 
 export default function Signup() {
   const navigate = useNavigate()
-  const { signUp, isLoaded } = useSignUp()
 
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
@@ -17,12 +16,10 @@ export default function Signup() {
   const [loading, setLoading] = useState(false)
   const [verifying, setVerifying] = useState(false)
   const [code, setCode] = useState('')
+  const [isLoaded, setIsLoaded] = useState(true)
 
-  // Show init error if Clerk fails to load
-  if (isLoaded === false) {
-    // Still loading
-  } else if (!signUp) {
-    // Clerk initialization failed
+  // Check if Supabase is initialized
+  if (!supabase) {
     return (
       <div className="min-h-screen w-full bg-[#0B1120] flex items-center justify-center px-4">
         <div className="text-center">
@@ -41,7 +38,6 @@ export default function Signup() {
   // Email + Password sign-up
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if (!isLoaded) return
 
     // Validation
     if (password !== confirmPassword) {
@@ -58,20 +54,28 @@ export default function Signup() {
     setLoading(true)
 
     try {
-      const result = await signUp.create({
-        firstName,
-        lastName,
-        emailAddress: email,
+      const { data, error: signUpError } = await supabase.auth.signUp({
+        email,
         password,
+        options: {
+          data: {
+            first_name: firstName,
+            last_name: lastName,
+          }
+          
+        },
       })
 
-      if (result.status === 'missing_requirements') {
+      if (signUpError) {
+        setError(signUpError.message || 'Sign up failed. Please try again.')
+        return
+      }
+
+      if (data?.user) {
         setVerifying(true)
-      } else if (result.status === 'complete') {
-        navigate('https://appedupractice.vercel.app')
       }
     } catch (err) {
-      setError(err.errors?.[0]?.longMessage || 'Sign up failed. Please try again.')
+      setError(err.message || 'Sign up failed. Please try again.')
     } finally {
       setLoading(false)
     }
@@ -80,21 +84,27 @@ export default function Signup() {
   // Email verification
   const handleVerify = async (e) => {
     e.preventDefault()
-    if (!isLoaded) return
 
     setError('')
     setLoading(true)
 
     try {
-      const result = await signUp.attemptEmailAddressVerification({ code })
+      const { data, error: verifyError } = await supabase.auth.verifyOtp({
+        email: email,
+        token: code,
+        type: 'signup',
+      });
 
-      if (result.status === 'complete') {
-        navigate('https://appedupractice.vercel.app')
-      } else {
-        setError('Verification failed. Please try again.')
+      if (verifyError) {
+        setError(verifyError.message || 'Verification failed. Please try again.')
+        return
+      }
+
+      if (data?.user) {
+        window.location.href = `https://appedupractice.vercel.app/`;
       }
     } catch (err) {
-      setError(err.errors?.[0]?.longMessage || 'Verification failed. Please try again.')
+      setError(err.message || 'Verification failed. Please try again.')
     } finally {
       setLoading(false)
     }
@@ -102,31 +112,23 @@ export default function Signup() {
 
   // Google OAuth
   const handleGoogleSignUp = async () => {
-    if (!isLoaded) return
     try {
-      await signUp.authenticateWithRedirect({
-        strategy: 'oauth_google',
-        redirectUrl: '/sso-callback',
-        redirectUrlComplete: 'https://appedupractice.vercel.app',
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `https://appedupractice.vercel.app/`, // Custom scheme for mobile deep linking
+        },
       })
+
+      if (error) {
+        setError(error.message || 'Google sign up failed.')
+      }
     } catch (err) {
-      setError(err.errors?.[0]?.longMessage || 'Google sign up failed.')
+      setError(err.message || 'Google sign up failed.')
     }
   }
 
-  // Apple OAuth
-  const handleAppleSignUp = async () => {
-    if (!isLoaded) return
-    try {
-      await signUp.authenticateWithRedirect({
-        strategy: 'oauth_apple',
-        redirectUrl: '/sso-callback',
-        redirectUrlComplete: 'https://appedupractice.vercel.app',
-      })
-    } catch (err) {
-      setError(err.errors?.[0]?.longMessage || 'Apple sign up failed.')
-    }
-  }
+
 
   return (
     <div className="min-h-screen w-full bg-[#0B1120] flex items-center justify-center px-4 sm:px-6 py-8 sm:py-12">
@@ -317,7 +319,7 @@ export default function Signup() {
                 {/* Sign Up Button */}
                 <button
                   type="submit"
-                  disabled={loading || !isLoaded}
+                  disabled={loading}
                   className="w-full py-3 bg-amber-500 text-gray-900 rounded-lg font-semibold hover:bg-amber-400 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
                 >
                   {loading ? 'Creating account…' : 'Create Account'}
@@ -337,34 +339,20 @@ export default function Signup() {
               </div>
 
               {/* Social Signup */}
-              <div className="grid grid-cols-2 gap-3">
+              <div className="flex justify-center">
                 {/* Google */}
                 <button
                   type="button"
                   onClick={handleGoogleSignUp}
-                  disabled={!isLoaded}
-                  className="py-2.5 px-3 sm:px-4 bg-[#1a1f2e] border border-gray-700 rounded-lg text-gray-300 hover:border-gray-500 transition-colors flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+                  className="w-md py-2.5 px-6 bg-[#1a1f2e] border border-gray-700 rounded-lg text-gray-300 hover:border-gray-500 transition-colors flex items-center justify-center gap-2"
                 >
-                  <svg className="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24" fill="currentColor">
+                  <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
                     <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
                     <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
                     <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
                   </svg>
                   <span className="text-sm font-medium">Google</span>
-                </button>
-
-                {/* Apple */}
-                <button
-                  type="button"
-                  onClick={handleAppleSignUp}
-                  disabled={!isLoaded}
-                  className="py-2.5 px-3 sm:px-4 bg-[#1a1f2e] border border-gray-700 rounded-lg text-gray-300 hover:border-gray-500 transition-colors flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
-                >
-                  <svg className="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M16.462 1.307c.12.919-.267 1.832-.784 2.508-.545.707-1.437 1.26-2.313 1.198-.133-.876.298-1.796.806-2.44.547-.695 1.49-1.226 2.291-1.266zm3.596 13.234c-.405.897-.6 1.298-1.122 2.09-.728 1.11-1.756 2.494-3.029 2.507-1.131.012-1.422-.736-2.956-.728-1.533.009-1.852.743-2.986.731-1.272-.013-2.243-1.26-2.972-2.372-2.04-3.103-2.254-6.748-.995-8.68.9-1.394 2.317-2.21 3.65-2.21 1.357 0 2.211.744 3.333.744 1.09 0 1.753-.747 3.324-.747 1.19 0 2.45.648 3.347 1.77-2.941 1.612-2.465 5.815.406 6.895z" />
-                  </svg>
-                  <span className="text-sm font-medium">Apple</span>
                 </button>
               </div>
 
@@ -375,7 +363,7 @@ export default function Signup() {
                   to="/login"
                   className="text-amber-400 hover:text-amber-300 font-medium transition-colors"
                 >
-                  Sign in
+                   Sign in
                 </Link>
               </p>
             </>
@@ -411,19 +399,19 @@ export default function Signup() {
                     value={code}
                     onChange={(e) => setCode(e.target.value)}
                     className="w-full px-4 py-3 bg-[#1a1f2e] border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-amber-400 transition-colors text-sm sm:text-base text-center tracking-widest"
-                    placeholder="000000"
-                    maxLength="6"
+                    placeholder="00000000"
+                    maxLength="8"
                     required
                   />
                   <p className="text-xs text-gray-500 mt-2">
-                    Check your email for the 6-digit code
+                    Check your email for the 8-digit code
                   </p>
                 </div>
 
                 {/* Verify Button */}
                 <button
                   type="submit"
-                  disabled={loading || !isLoaded}
+                  disabled={loading}
                   className="w-full py-3 bg-amber-500 text-gray-900 rounded-lg font-semibold hover:bg-amber-400 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
                 >
                   {loading ? 'Verifying…' : 'Verify Email'}
