@@ -4,6 +4,14 @@ import { Link, useNavigate } from 'react-router-dom'
 import { GraduationCapIcon, MailIcon, LockIcon, UserIcon } from 'lucide-react'
 import { supabase } from '../lib/supabaseClient'
 
+// Redirect to the app with the session token appended as ?token=
+const redirectWithToken = (accessToken, returnUrl) => {
+  const base = returnUrl || 'https://appedupractice.vercel.app/'
+  const url = new URL(base)
+  url.searchParams.set('token', accessToken)
+  window.location.href = url.toString()
+}
+
 export default function Signup() {
   const navigate = useNavigate()
 
@@ -18,7 +26,6 @@ export default function Signup() {
   const [code, setCode] = useState('')
   const [isLoaded, setIsLoaded] = useState(true)
 
-  // Check if Supabase is initialized
   if (!supabase) {
     return (
       <div className="min-h-screen w-full bg-[#0B1120] flex items-center justify-center px-4">
@@ -35,11 +42,16 @@ export default function Signup() {
     )
   }
 
+  // Resolve where to send the user after signup (respects ?return= param set by ProtectedRoute)
+  const getReturnUrl = () => {
+    const params = new URLSearchParams(window.location.search)
+    return params.get('return') || 'https://appedupractice.vercel.app/'
+  }
+
   // Email + Password sign-up
   const handleSubmit = async (e) => {
     e.preventDefault()
 
-    // Validation
     if (password !== confirmPassword) {
       setError('Passwords do not match')
       return
@@ -61,8 +73,7 @@ export default function Signup() {
           data: {
             first_name: firstName,
             last_name: lastName,
-          }
-          
+          },
         },
       })
 
@@ -81,27 +92,26 @@ export default function Signup() {
     }
   }
 
-  // Email verification
+  // Email OTP verification
   const handleVerify = async (e) => {
     e.preventDefault()
-
     setError('')
     setLoading(true)
 
     try {
       const { data, error: verifyError } = await supabase.auth.verifyOtp({
-        email: email,
+        email,
         token: code,
         type: 'signup',
-      });
+      })
 
       if (verifyError) {
         setError(verifyError.message || 'Verification failed. Please try again.')
         return
       }
 
-      if (data?.user) {
-        window.location.href = `https://appedupractice.vercel.app/`;
+      if (data?.session?.access_token) {
+        redirectWithToken(data.session.access_token, getReturnUrl())
       }
     } catch (err) {
       setError(err.message || 'Verification failed. Please try again.')
@@ -116,7 +126,7 @@ export default function Signup() {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `https://appedupractice.vercel.app/`, // Custom scheme for mobile deep linking
+          redirectTo: getReturnUrl(),
         },
       })
 
@@ -128,8 +138,6 @@ export default function Signup() {
     }
   }
 
-
-
   return (
     <div className="min-h-screen w-full bg-[#0B1120] flex items-center justify-center px-4 sm:px-6 py-8 sm:py-12">
       <motion.div
@@ -139,50 +147,32 @@ export default function Signup() {
         transition={{ duration: 0.5 }}
       >
         {/* Logo */}
-        <Link
-          to="/"
-          className="flex items-center justify-center gap-2 mb-6 sm:mb-8"
-        >
+        <Link to="/" className="flex items-center justify-center gap-2 mb-6 sm:mb-8">
           <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white rounded-lg flex items-center justify-center">
             <GraduationCapIcon className="w-6 h-6 sm:w-7 sm:h-7 text-gray-900" />
           </div>
-          <span className="text-xl sm:text-2xl font-bold text-white">
-            EduPractice
-          </span>
+          <span className="text-xl sm:text-2xl font-bold text-white">EduPractice</span>
         </Link>
 
         {/* Signup Card */}
         <div className="bg-[#111827] border border-gray-800 rounded-2xl p-5 sm:p-8">
           {!isLoaded ? (
-            // Loading skeleton
             <div className="space-y-6">
               <div className="space-y-3">
                 <div className="h-8 bg-gray-700/50 rounded-lg animate-pulse"></div>
                 <div className="h-4 bg-gray-700/50 rounded-lg animate-pulse w-3/4 mx-auto"></div>
               </div>
-
-              {/* Name inputs skeleton */}
               <div className="grid grid-cols-2 gap-3 sm:gap-4">
                 <div className="h-11 bg-gray-700/50 rounded-lg animate-pulse"></div>
                 <div className="h-11 bg-gray-700/50 rounded-lg animate-pulse"></div>
               </div>
-
-              {/* Email input skeleton */}
               <div className="h-11 bg-gray-700/50 rounded-lg animate-pulse"></div>
-
-              {/* Password inputs skeleton */}
               <div className="space-y-3">
                 <div className="h-11 bg-gray-700/50 rounded-lg animate-pulse"></div>
                 <div className="h-11 bg-gray-700/50 rounded-lg animate-pulse"></div>
               </div>
-
-              {/* Button skeleton */}
               <div className="h-11 bg-amber-500/50 rounded-lg animate-pulse"></div>
-
-              {/* Divider skeleton */}
               <div className="h-px bg-gray-700/50"></div>
-
-              {/* Social buttons skeleton */}
               <div className="grid grid-cols-2 gap-3">
                 <div className="h-11 bg-gray-700/50 rounded-lg animate-pulse"></div>
                 <div className="h-11 bg-gray-700/50 rounded-lg animate-pulse"></div>
@@ -197,7 +187,6 @@ export default function Signup() {
                 Join thousands of students learning today
               </p>
 
-              {/* Error message */}
               {error && (
                 <div className="mb-4 px-4 py-3 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400 text-sm text-center">
                   {error}
@@ -208,10 +197,7 @@ export default function Signup() {
                 {/* First Name & Last Name */}
                 <div className="grid grid-cols-2 gap-3 sm:gap-4">
                   <div>
-                    <label
-                      htmlFor="firstName"
-                      className="block text-sm font-medium text-gray-300 mb-2"
-                    >
+                    <label htmlFor="firstName" className="block text-sm font-medium text-gray-300 mb-2">
                       First Name
                     </label>
                     <div className="relative">
@@ -228,10 +214,7 @@ export default function Signup() {
                     </div>
                   </div>
                   <div>
-                    <label
-                      htmlFor="lastName"
-                      className="block text-sm font-medium text-gray-300 mb-2"
-                    >
+                    <label htmlFor="lastName" className="block text-sm font-medium text-gray-300 mb-2">
                       Last Name
                     </label>
                     <div className="relative">
@@ -249,12 +232,9 @@ export default function Signup() {
                   </div>
                 </div>
 
-                {/* Email Input */}
+                {/* Email */}
                 <div>
-                  <label
-                    htmlFor="email"
-                    className="block text-sm font-medium text-gray-300 mb-2"
-                  >
+                  <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
                     Email Address
                   </label>
                   <div className="relative">
@@ -271,12 +251,9 @@ export default function Signup() {
                   </div>
                 </div>
 
-                {/* Password Input */}
+                {/* Password */}
                 <div>
-                  <label
-                    htmlFor="password"
-                    className="block text-sm font-medium text-gray-300 mb-2"
-                  >
+                  <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-2">
                     Password
                   </label>
                   <div className="relative">
@@ -294,12 +271,9 @@ export default function Signup() {
                   <p className="text-xs text-gray-500 mt-1">Min 8 characters</p>
                 </div>
 
-                {/* Confirm Password Input */}
+                {/* Confirm Password */}
                 <div>
-                  <label
-                    htmlFor="confirmPassword"
-                    className="block text-sm font-medium text-gray-300 mb-2"
-                  >
+                  <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-300 mb-2">
                     Confirm Password
                   </label>
                   <div className="relative">
@@ -332,15 +306,12 @@ export default function Signup() {
                   <div className="w-full border-t border-gray-700"></div>
                 </div>
                 <div className="relative flex justify-center text-sm">
-                  <span className="px-2 bg-[#111827] text-gray-500">
-                    Or sign up with
-                  </span>
+                  <span className="px-2 bg-[#111827] text-gray-500">Or sign up with</span>
                 </div>
               </div>
 
-              {/* Social Signup */}
+              {/* Google */}
               <div className="flex justify-center">
-                {/* Google */}
                 <button
                   type="button"
                   onClick={handleGoogleSignUp}
@@ -359,11 +330,8 @@ export default function Signup() {
               {/* Sign In Link */}
               <p className="text-center text-gray-400 text-sm mt-5 sm:mt-6">
                 Already have an account?{' '}
-                <Link
-                  to="/login"
-                  className="text-amber-400 hover:text-amber-300 font-medium transition-colors"
-                >
-                   Sign in
+                <Link to="/login" className="text-amber-400 hover:text-amber-300 font-medium transition-colors">
+                  Sign in
                 </Link>
               </p>
             </>
@@ -377,7 +345,6 @@ export default function Signup() {
                 We sent a verification code to <span className="text-white font-medium">{email}</span>
               </p>
 
-              {/* Error message */}
               {error && (
                 <div className="mb-4 px-4 py-3 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400 text-sm text-center">
                   {error}
@@ -385,12 +352,8 @@ export default function Signup() {
               )}
 
               <form className="space-y-4 sm:space-y-5" onSubmit={handleVerify}>
-                {/* Verification Code */}
                 <div>
-                  <label
-                    htmlFor="code"
-                    className="block text-sm font-medium text-gray-300 mb-2"
-                  >
+                  <label htmlFor="code" className="block text-sm font-medium text-gray-300 mb-2">
                     Verification Code
                   </label>
                   <input
@@ -403,12 +366,9 @@ export default function Signup() {
                     maxLength="8"
                     required
                   />
-                  <p className="text-xs text-gray-500 mt-2">
-                    Check your email for the 8-digit code
-                  </p>
+                  <p className="text-xs text-gray-500 mt-2">Check your email for the 8-digit code</p>
                 </div>
 
-                {/* Verify Button */}
                 <button
                   type="submit"
                   disabled={loading}
@@ -417,14 +377,9 @@ export default function Signup() {
                   {loading ? 'Verifying…' : 'Verify Email'}
                 </button>
 
-                {/* Back to Form */}
                 <button
                   type="button"
-                  onClick={() => {
-                    setVerifying(false)
-                    setCode('')
-                    setError('')
-                  }}
+                  onClick={() => { setVerifying(false); setCode(''); setError('') }}
                   className="w-full py-2 text-gray-400 hover:text-gray-300 transition-colors text-sm"
                 >
                   ← Back

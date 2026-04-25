@@ -4,6 +4,14 @@ import { Link, useNavigate } from 'react-router-dom'
 import { GraduationCapIcon, MailIcon, LockIcon } from 'lucide-react'
 import { supabase } from '../lib/supabaseClient'
 
+// Redirect to the app with the session token appended as ?token=
+const redirectWithToken = (accessToken, returnUrl) => {
+  const base = returnUrl || 'https://appedupractice.vercel.app/'
+  const url = new URL(base)
+  url.searchParams.set('token', accessToken)
+  window.location.href = url.toString()
+}
+
 export default function Login() {
   const navigate = useNavigate()
 
@@ -13,7 +21,6 @@ export default function Login() {
   const [loading, setLoading] = useState(false)
   const [isLoaded, setIsLoaded] = useState(true)
 
-  // Check if Supabase is initialized
   if (!supabase) {
     return (
       <div className="min-h-screen w-full bg-[#0B1120] flex items-center justify-center px-4">
@@ -30,26 +37,31 @@ export default function Login() {
     )
   }
 
+  // Resolve where to send the user after login (respects ?return= param set by ProtectedRoute)
+  const getReturnUrl = () => {
+    const params = new URLSearchParams(window.location.search)
+    return params.get('return') || 'https://appedupractice.vercel.app/'
+  }
+
   // Email + Password sign-in
   const handleSubmit = async (e) => {
     e.preventDefault()
-
     setError('')
     setLoading(true)
 
     try {
       const { data, error: signInError } = await supabase.auth.signInWithPassword({
         email,
-        password,  
-      });
+        password,
+      })
 
       if (signInError) {
         setError(signInError.message || 'Sign in failed. Please try again.')
         return
       }
 
-      if (data?.user) {
-        window.location.href='https://appedupractice.vercel.app/'
+      if (data?.session?.access_token) {
+        redirectWithToken(data.session.access_token, getReturnUrl())
       }
     } catch (err) {
       setError(err.message || 'Sign in failed. Please try again.')
@@ -58,15 +70,16 @@ export default function Login() {
     }
   }
 
-  // Google OAuth
+  // Google OAuth — Supabase handles the redirect itself.
+  // The app's redirectTo URL will receive the session in the URL hash automatically.
   const handleGoogleSignIn = async () => {
     try {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `https://appedupractice.vercel.app/`, // Custom scheme for mobile deep linking
+          redirectTo: getReturnUrl(),
         },
-      });
+      })
 
       if (error) {
         setError(error.message || 'Google sign in failed.')
@@ -75,8 +88,6 @@ export default function Login() {
       setError(err.message || 'Google sign in failed.')
     }
   }
-
-
 
   // Forgot password
   const handleForgotPassword = async (e) => {
@@ -90,23 +101,13 @@ export default function Login() {
     setLoading(true)
 
     try {
-      const { error } = await supabase.auth.resetPasswordForEmail(email);
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: 'https://appedupractice.vercel.app/reset-password',
+      })
 
       if (error) {
         setError(error.message || 'Could not send reset email.')
       } else {
-        const verifyResetCode = async (email, code) => {
-          const { data, error } = await supabase.auth.verifyOtp({
-            email,
-            token: code,
-            type: 'recovery',
-          });
-          if (error) {
-            console.error('Error verifying reset code:', error);
-          } else {
-            window.location.href = `https://appedupractice.vercel.app/`;
-          }
-        }
         setError('Password reset email sent! Check your inbox.')
       }
     } catch (err) {
@@ -125,44 +126,26 @@ export default function Login() {
         transition={{ duration: 0.5 }}
       >
         {/* Logo */}
-        <Link
-          to="/"
-          className="flex items-center justify-center gap-2 mb-6 sm:mb-8"
-        >
+        <Link to="/" className="flex items-center justify-center gap-2 mb-6 sm:mb-8">
           <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white rounded-lg flex items-center justify-center">
             <GraduationCapIcon className="w-6 h-6 sm:w-7 sm:h-7 text-gray-900" />
           </div>
-          <span className="text-xl sm:text-2xl font-bold text-white">
-            EduPractice
-          </span>
+          <span className="text-xl sm:text-2xl font-bold text-white">EduPractice</span>
         </Link>
 
         {/* Login Card */}
         <div className="bg-[#111827] border border-gray-800 rounded-2xl p-5 sm:p-8">
           {!isLoaded ? (
-            // Loading skeleton
             <div className="space-y-6">
               <div className="space-y-3">
                 <div className="h-8 bg-gray-700/50 rounded-lg animate-pulse"></div>
                 <div className="h-4 bg-gray-700/50 rounded-lg animate-pulse w-3/4 mx-auto"></div>
               </div>
-
-              {/* Email input skeleton */}
               <div className="h-11 bg-gray-700/50 rounded-lg animate-pulse"></div>
-
-              {/* Password input skeleton */}
               <div className="h-11 bg-gray-700/50 rounded-lg animate-pulse"></div>
-
-              {/* Forgot password skeleton */}
               <div className="h-4 bg-gray-700/50 rounded-lg animate-pulse w-1/3 ml-auto"></div>
-
-              {/* Button skeleton */}
               <div className="h-11 bg-amber-500/50 rounded-lg animate-pulse"></div>
-
-              {/* Divider skeleton */}
               <div className="h-px bg-gray-700/50"></div>
-
-              {/* Social buttons skeleton */}
               <div className="grid grid-cols-2 gap-3">
                 <div className="h-11 bg-gray-700/50 rounded-lg animate-pulse"></div>
                 <div className="h-11 bg-gray-700/50 rounded-lg animate-pulse"></div>
@@ -177,7 +160,6 @@ export default function Login() {
                 Sign in to continue your learning journey
               </p>
 
-              {/* Error message */}
               {error && (
                 <div className="mb-4 px-4 py-3 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400 text-sm text-center">
                   {error}
@@ -185,12 +167,9 @@ export default function Login() {
               )}
 
               <form className="space-y-4 sm:space-y-5" onSubmit={handleSubmit}>
-                {/* Email Input */}
+                {/* Email */}
                 <div>
-                  <label
-                    htmlFor="email"
-                    className="block text-sm font-medium text-gray-300 mb-2"
-                  >
+                  <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
                     Email Address
                   </label>
                   <div className="relative">
@@ -207,12 +186,9 @@ export default function Login() {
                   </div>
                 </div>
 
-                {/* Password Input */}
+                {/* Password */}
                 <div>
-                  <label
-                    htmlFor="password"
-                    className="block text-sm font-medium text-gray-300 mb-2"
-                  >
+                  <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-2">
                     Password
                   </label>
                   <div className="relative">
@@ -240,7 +216,7 @@ export default function Login() {
                   </button>
                 </div>
 
-                {/* Sign In Button */}
+                {/* Sign In */}
                 <button
                   type="submit"
                   disabled={loading}
@@ -256,19 +232,16 @@ export default function Login() {
                   <div className="w-full border-t border-gray-700"></div>
                 </div>
                 <div className="relative flex justify-center text-sm">
-                  <span className="px-2 bg-[#111827] text-gray-500">
-                    Or continue with
-                  </span>
+                  <span className="px-2 bg-[#111827] text-gray-500">Or continue with</span>
                 </div>
               </div>
 
-              {/* Social Login */}
+              {/* Google */}
               <div className="flex justify-center">
-                {/* Google */}
                 <button
                   type="button"
                   onClick={handleGoogleSignIn}
-                  className=" w-md py-2.5 px-6 bg-[#1a1f2e] border border-gray-700 rounded-lg text-gray-300 hover:border-gray-500 transition-colors flex items-center justify-center  "
+                  className="w-md py-2.5 px-6 bg-[#1a1f2e] border border-gray-700 rounded-lg text-gray-300 hover:border-gray-500 transition-colors flex items-center justify-center gap-2"
                 >
                   <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
@@ -280,14 +253,11 @@ export default function Login() {
                 </button>
               </div>
 
-              {/* Sign Up Link */}
+              {/* Sign Up */}
               <p className="text-center text-gray-400 text-sm mt-5 sm:mt-6">
                 Don't have an account?{' '}
-                <Link
-                  to="/signup"
-                  className="text-amber-400 hover:text-amber-300 font-medium transition-colors"
-                >
-                   Sign up
+                <Link to="/signup" className="text-amber-400 hover:text-amber-300 font-medium transition-colors">
+                  Sign up
                 </Link>
               </p>
             </>
