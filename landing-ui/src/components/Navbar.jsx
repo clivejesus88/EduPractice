@@ -41,18 +41,18 @@ export function Navbar({ variant = 'landing' }) {
           </div>
 
           <div className="hidden md:flex items-center gap-4">
-            <Link
-              to="/login"
+            <a
+              href="https://appedupractice.vercel.app/login"
               className="text-gray-300 hover:text-white transition-colors"
             >
               Sign In
-            </Link>
-            <Link
-              to="/login"
+            </a>
+            <a
+              href="https://appedupractice.vercel.app/signup"
               className="px-6 py-2.5 bg-white text-gray-900 rounded-lg font-medium hover:bg-gray-100 transition-colors"
             >
               Start Free
-            </Link>
+            </a>
           </div>
 
           {/* Mobile hamburger */}
@@ -111,20 +111,20 @@ export function Navbar({ variant = 'landing' }) {
                   How It Works
                 </a>
                 <div className="border-t border-gray-700 pt-4 flex flex-col gap-3">
-                  <Link
-                    to="/login"
+                  <a
+                    href="https://appedupractice.vercel.app/login"
                     className="text-gray-300 hover:text-white transition-colors py-2"
                     onClick={() => setMobileOpen(false)}
                   >
                     Sign In
-                  </Link>
-                  <Link
-                    to="/login"
+                  </a>
+                  <a
+                    href="https://appedupractice.vercel.app/signup"
                     className="px-6 py-2.5 bg-white text-gray-900 rounded-lg font-medium text-center hover:bg-gray-100 transition-colors"
                     onClick={() => setMobileOpen(false)}
                   >
                     Start Free
-                  </Link>
+                  </a>
                 </div>
               </motion.div>
             )}

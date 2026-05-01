@@ -101,12 +101,12 @@ export default function Landing() {
               ace your exams with confidence.
             </p>
 
-            <Link
-              to="/login"
+            <a
+              href="https://appedupractice.vercel.app/login"
               className="inline-block px-6 sm:px-8 py-3 sm:py-3.5 border-2 border-white text-white rounded-lg font-medium hover:bg-white hover:text-gray-900 transition-all text-sm sm:text-base"
             >
               Start Practicing Free
-            </Link>
+            </a>
 
             {/* Stats */}
             <div className="grid grid-cols-3 gap-3 sm:gap-6 mt-8 sm:mt-12">
