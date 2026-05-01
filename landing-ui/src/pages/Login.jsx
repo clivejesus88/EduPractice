@@ -77,7 +77,7 @@ export default function Login() {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: getReturnUrl(),
+          redirectTo: 'https://appedupractice.vercel.app/',
         },
       })
 
