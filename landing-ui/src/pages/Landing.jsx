@@ -102,7 +102,7 @@ export default function Landing() {
             </p>
 
             <a
-              href="https://appedupractice.vercel.app/login"
+              href="https://appedupractice.vercel.app"
               className="inline-block px-6 sm:px-8 py-3 sm:py-3.5 border-2 border-white text-white rounded-lg font-medium hover:bg-white hover:text-gray-900 transition-all text-sm sm:text-base"
             >
               Start Practicing Free
@@ -314,10 +314,10 @@ export default function Landing() {
                   S.6 and S.4
                 </div>
               </div>
-              <Link to="/login">
+              <a href="https://appedupractice.vercel.app" target="_blank" rel="noopener noreferrer">
               <button className="w-full py-3 bg-gray-800 hover:bg-gray-700 text-white rounded-xl font-medium transition-colors flex items-center justify-center gap-2">
                 Start Practicing <ArrowRightIcon className="w-4 h-4" />
-              </button></Link>
+              </button></a>
             </motion.div>
 
             {/* Mathematics Card */}
@@ -356,10 +356,10 @@ export default function Landing() {
                   S.6 and S.4
                 </div>
               </div>
-              <Link to="/login">
+              <a href="https://appedupractice.vercel.app" target="_blank" rel="noopener noreferrer">
               <button className="w-full py-3 bg-amber-500 hover:bg-amber-400 text-gray-900 rounded-xl font-semibold transition-colors flex items-center justify-center gap-2">
                 Start Practicing <ArrowRightIcon className="w-4 h-4" />
-              </button></Link>
+              </button></a>
             </motion.div>
           </div>
         </div>
@@ -674,12 +674,14 @@ export default function Landing() {
               with EduPractice.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link
-                to="/login"
+              <a
+                href='https://appedupractice.vercel.app/'
+                target='_blank'
+                rel="noopener noreferrer"
                 className="w-full sm:w-auto px-8 py-4 bg-amber-500 text-gray-900 rounded-xl font-bold hover:bg-amber-400 transition-colors text-lg"
               >
                 Get Started Free
-              </Link>
+              </a>
               <Link
                 to="#features"
                 className="w-full sm:w-auto px-8 py-4 border-2 border-gray-700 text-white rounded-xl font-bold hover:bg-gray-800 transition-colors text-lg"
