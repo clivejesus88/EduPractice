@@ -297,7 +297,7 @@ export function HeroSection() {
                   damping: 20,
                   delay: 0.5
                 }}>
-                <Link to="/login">
+                <a href="https://edupracticeapp.vercel.app/login" target="_blank">
                 <motion.button
                   whileHover={{
                     scale: 1.05,
